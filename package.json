@@ -1,0 +1,34 @@
+{
+  "name": "purescript-rxjs",
+  "version": "0.1.0",
+  "description": "An un-opinionated wrapper around Reactive Extensions for JavaScript (v5.*).",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "node node_modules/.bin/webpack-dev-server --inline --hot" 
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jasonzoladz/purescript-rxjs.git"
+  },
+  "keywords": [
+    "purescript-rxjs"
+  ],
+  "author": "Jason M. Zoladz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jasonzoladz/purescript-rxjs/issues"
+  },
+  "homepage": "https://github.com/jasonzoladz/purescript-rxjs#readme",
+  "devDependencies": {
+    "purs-loader": "^2.1.1",
+    "webpack": "^1.14.0",
+    "webpack-dev-server": "^1.16.2"
+  },
+  "dependencies": {
+    "jquery": "^3.1.1",
+    "rxjs": "^5.0.2"
+  }
+}
