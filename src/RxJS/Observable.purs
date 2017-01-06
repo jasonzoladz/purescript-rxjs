@@ -1,5 +1,5 @@
 module RxJS.Observable
-  ( Observable(..)
+  ( Observable()
   , observeOn
   , subscribeOn
   , subscribe

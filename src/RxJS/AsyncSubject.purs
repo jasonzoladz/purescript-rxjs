@@ -74,7 +74,7 @@ import Data.Function.Eff
 import Data.Function
 import RxJS.Scheduler
 import Control.Alt (class Alt)
-import Control.Alternative (class Alternative)
+import Control.Alternative (class Alternative, empty)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Exception (Error)
 import Control.Monad.Error.Class (class MonadError)
@@ -83,7 +83,7 @@ import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
 import DOM.Event.Types (Event, EventType(..), EventTarget)
 import Data.Function.Uncurried (Fn2, Fn3, Fn4, runFn2, runFn3, runFn4)
-import Prelude (class Semigroup, class Monad, class Bind, class Applicative, class Apply, class Functor, Unit, id, (<$>))
+import Prelude (class Semigroup, class Monad, class Bind, class Applicative, class Apply, class Functor, Unit, id, (<$>), unit)
 import RxJS.Notification (Notification(OnComplete, OnError, OnNext))
 import RxJS.Observable (Observable)
 import RxJS.Subscriber (Subscriber)
@@ -118,7 +118,7 @@ instance altAsyncSubject :: Alt AsyncSubject where
   alt = merge
 
 instance plusAsyncSubject :: Plus AsyncSubject where
-  empty = _empty
+  empty = _empty unit
 
 instance alternativeAsyncSubject :: Alternative AsyncSubject
 
@@ -149,7 +149,7 @@ foreign import subscribeNext
 
 -- Creation Operators
 
-foreign import _empty :: forall a. AsyncSubject a
+foreign import _empty :: forall a. Unit -> AsyncSubject a
 
 -- | Creates an AsyncSubject that emits the value specify,
 -- | and then emits a complete notification.  An alias for `of`.

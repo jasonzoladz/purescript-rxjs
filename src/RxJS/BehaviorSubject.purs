@@ -1,5 +1,5 @@
 module RxJS.BehaviorSubject
-  ( BehaviorSubject(..)
+  ( BehaviorSubject()
   , observeOn
   , subscribeOn
   , subscribe

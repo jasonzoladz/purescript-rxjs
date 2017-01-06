@@ -45,7 +45,7 @@ exports.subscribeNext = function (eff){
 
 /**** Creation Operator ****/
 
-exports._empty = function(){
+exports._empty = function (){
   return new Rx.ReplaySubject();
 }
 
