@@ -121,12 +121,12 @@ instance altBehaviorSubject :: Alt BehaviorSubject where
 
 -- Scheduling
 
--- | Takes a Scheduler and returns a new BehaviorSubject that uses that Scheduler.
--- | It will make every `next` call run in the new scheduler.
+-- | Makes every `next` call run in the new Scheduler.
 foreign import observeOn :: forall a. Scheduler -> BehaviorSubject a -> BehaviorSubject a
 
--- | Forces the subscription and unsubscription
+-- | Makes subscription happen on a given Scheduler.
 foreign import subscribeOn :: forall a. Scheduler -> BehaviorSubject a -> BehaviorSubject a
+
 
 -- Subscription
 

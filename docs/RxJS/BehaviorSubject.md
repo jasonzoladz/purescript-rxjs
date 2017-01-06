@@ -26,8 +26,7 @@ Alt BehaviorSubject
 observeOn :: forall a. Scheduler -> BehaviorSubject a -> BehaviorSubject a
 ```
 
-Takes a Scheduler and returns a new BehaviorSubject that uses that Scheduler.
-It will make every `next` call run in the new scheduler.
+Makes every `next` call run in the new Scheduler.
 
 #### `subscribeOn`
 
@@ -35,7 +34,7 @@ It will make every `next` call run in the new scheduler.
 subscribeOn :: forall a. Scheduler -> BehaviorSubject a -> BehaviorSubject a
 ```
 
-Forces the subscription and unsubscription
+Makes subscription happen on a given Scheduler.
 
 #### `subscribe`
 

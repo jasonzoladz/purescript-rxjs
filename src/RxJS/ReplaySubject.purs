@@ -130,11 +130,10 @@ instance monadPlusReplaySubject :: MonadPlus ReplaySubject
 
 -- Scheduling
 
--- | Takes a Scheduler and returns a new ReplaySubject that uses that Scheduler.
--- | It will make every `next` call run in the new scheduler.
+-- | Makes every `next` call run in the new Scheduler.
 foreign import observeOn :: forall a. Scheduler -> ReplaySubject a -> ReplaySubject a
 
--- | Forces the subscription and unsubscription
+-- | Makes subscription happen on a given Scheduler.
 foreign import subscribeOn :: forall a. Scheduler -> ReplaySubject a -> ReplaySubject a
 
 -- Subscription

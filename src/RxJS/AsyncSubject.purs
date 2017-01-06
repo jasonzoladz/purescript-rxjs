@@ -128,11 +128,10 @@ instance monadPlusAsyncSubject :: MonadPlus AsyncSubject
 
 -- Scheduling
 
--- | Takes a Scheduler and returns a new AsyncSubject that uses that Scheduler.
--- | It will make every `next` call run in the new scheduler.
+-- | Makes every `next` call run in the new Scheduler.
 foreign import observeOn :: forall a. Scheduler -> AsyncSubject a -> AsyncSubject a
 
--- | Forces the subscription and unsubscription
+-- | Makes subscription happen on a given Scheduler.
 foreign import subscribeOn :: forall a. Scheduler -> AsyncSubject a -> AsyncSubject a
 
 -- Subscription

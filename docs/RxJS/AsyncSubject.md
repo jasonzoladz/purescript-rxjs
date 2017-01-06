@@ -30,8 +30,7 @@ MonadPlus AsyncSubject
 observeOn :: forall a. Scheduler -> AsyncSubject a -> AsyncSubject a
 ```
 
-Takes a Scheduler and returns a new AsyncSubject that uses that Scheduler.
-It will make every `next` call run in the new scheduler.
+Makes every `next` call run in the new Scheduler.
 
 #### `subscribeOn`
 
@@ -39,7 +38,7 @@ It will make every `next` call run in the new scheduler.
 subscribeOn :: forall a. Scheduler -> AsyncSubject a -> AsyncSubject a
 ```
 
-Forces the subscription and unsubscription
+Makes subscription happen on a given Scheduler.
 
 #### `subscribe`
 

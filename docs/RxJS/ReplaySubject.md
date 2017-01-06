@@ -30,8 +30,7 @@ MonadPlus ReplaySubject
 observeOn :: forall a. Scheduler -> ReplaySubject a -> ReplaySubject a
 ```
 
-Takes a Scheduler and returns a new ReplaySubject that uses that Scheduler.
-It will make every `next` call run in the new scheduler.
+Makes every `next` call run in the new Scheduler.
 
 #### `subscribeOn`
 
@@ -39,7 +38,7 @@ It will make every `next` call run in the new scheduler.
 subscribeOn :: forall a. Scheduler -> ReplaySubject a -> ReplaySubject a
 ```
 
-Forces the subscription and unsubscription
+Makes subscription happen on a given Scheduler.
 
 #### `subscribe`
 
