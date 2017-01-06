@@ -12,6 +12,7 @@ import Test.Unit.QuickCheck
 import Control.Monad.Aff.AVar
 
 import RxJS.Observable as O
+import RxJS.BehaviorSubject as B
 
 -- main :: forall e. Eff (console :: CONSOLE, testOutput :: TESTOUTPUT, avar :: AVAR | e) Unit
 main = log "You should write some tests."

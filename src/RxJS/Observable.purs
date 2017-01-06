@@ -1,48 +1,166 @@
-module RxJS.Observable where
+module RxJS.Observable
+  ( Observable(..)
+  , observeOn
+  , subscribeOn
+  , subscribe
+  , subscribeNext
+  , fromArray
+  , fromEvent
+  , interval
+  , just
+  , never
+  , range
+  , throw
+  , timer
+  , buffer
+  , bufferCount
+  , bufferToggle
+  , bufferWhen
+  , concatMap
+  , concatMapTo
+  , exhaustMap
+  , expand
+  , groupBy
+  , mapTo
+  , mergeMapTo
+  , pairwise
+  , partition
+  , scan
+  , switchMap
+  , switchMapTo
+  , window
+  , windowCount
+  , windowTime
+  , windowToggle
+  , windowWhen
+  , audit
+  , auditTime
+  , debounce
+  , debounceTime
+  , distinct
+  , distinctUntilChanged
+  , elementAt
+  , filter
+  , ignoreElements
+  , last
+  , sample
+  , sampleTime
+  , skip
+  , skipUntil
+  , skipWhile
+  , take
+  , takeUntil
+  , takeWhile
+  , throttle
+  , throttleTime
+  , combineLatest
+  , concat
+  , concatAll
+  , exhaust
+  , merge
+  , mergeAll
+  , race
+  , startWith
+  , withLatestFrom
+  , zip
+  , catch
+  , retry
+  , delay
+  , delayWhen
+  , dematerialize
+  , materialize
+  , performEach
+  , toArray
+  , count
+  )
+  where
 
 import Control.Monad.Aff
 import Data.Array.ST
 import Data.Function.Eff
 import Data.Function
+import RxJS.Scheduler
+import Control.Alt (class Alt)
+import Control.Alternative (class Alternative)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Exception (Error)
+import Control.Monad.Error.Class (class MonadError)
+import Control.MonadPlus (class MonadPlus)
+import Control.MonadZero (class MonadZero)
+import Control.Plus (class Plus)
 import DOM.Event.Types (Event, EventType(..), EventTarget)
 import Data.Function.Uncurried (Fn2, Fn3, Fn4, runFn2, runFn3, runFn4)
-import Prelude (class Ord, Ordering, Unit, bind, map, pure, unit, void, ($))
-import RxJS.Subscriber (Subscriber)
-import Test.QuickCheck (class Arbitrary, arbitrary)
-import Test.QuickCheck.Gen (Gen, arrayOf)
-
-
+import Prelude (class Semigroup, class Monad, class Bind, class Applicative, class Apply, class Functor, Unit, id, (<$>))
 import RxJS.Notification (Notification(OnComplete, OnError, OnNext))
+import RxJS.Subscriber (Subscriber)
+import RxJS.Subscription (Subscription)
+import Test.QuickCheck (class Arbitrary, arbitrary)
+import Test.QuickCheck.Gen (arrayOf)
 
--- | *Note*: A couple operators are not wrapped (namely, `bindCallback`, `bindNodeCallback`, X) because RxJS
--- | implementation details prevent giving the operators an "honest" type.
--- | However, such operators are replaced independently using `Aff` in the `AsyncSubject` module.
-
+-- | *Note*: A couple operators are not wrapped (namely, `bindCallback`, `bindNodeCallback`) because RxJS
+-- | implementation details prevent giving the operators an "honest" PureScript type.
+-- | However, such operators are replaced easily using `Aff` with the `AsyncSubject` module.
 -- | Please see [RxJS Version 5.* documentation](http://reactivex.io/rxjs/) for
 -- | additional details on proper usage of the library.
 
--- | Observables are lazy Push collections of multiple values.
 foreign import data Observable :: * -> *
 
+instance functorObservable :: Functor Observable where
+  map = _map
+
+instance applyObservable :: Apply Observable where
+  apply = combineLatest id
+
+instance applicativeObservable :: Applicative Observable where
+  pure = just
+
+instance bindObservable :: Bind Observable where
+  bind = mergeMap
+
+instance monadObservable :: Monad Observable
+
+instance semigroupObservable :: Semigroup (Observable a) where
+  append = concat
+
+instance altObservable :: Alt Observable where
+  alt = merge
+
+instance plusObservable :: Plus Observable where
+  empty = _empty
+
+instance alternativeObservable :: Alternative Observable
+
+instance monadZeroObservable :: MonadZero Observable
+
+instance monadPlusObservable :: MonadPlus Observable
+
+instance monadErrorObservable :: MonadError Error Observable where
+  catchError = catch
+  throwError = throw
 
 instance arbitraryObservable :: Arbitrary a => Arbitrary (Observable a) where
-  arbitrary = map fromArray (arrayOf (arbitrary :: Gen a))
+  arbitrary = fromArray <$> (arrayOf arbitrary)
 
--- | ### Subscription
+-- | Makes every `next` call run in the new Scheduler.
+foreign import observeOn :: forall a. Scheduler -> Observable a -> Observable a
+
+-- | Makes subscription happen on a given Scheduler.
+foreign import subscribeOn :: forall a. Scheduler -> Observable a -> Observable a
+
+-- Subscription
 
 -- | Subscribing to an Observable is like calling a function, providing
 -- | `next`, `error` and `completed` effects to which the data will be delivered.
-foreign import subscribe :: forall a e. Subscriber a -> Observable a ->  Eff (|e) Unit
+foreign import subscribe :: forall a e. Subscriber a -> Observable a ->  Eff (|e) Subscription
 
+-- Subscribe to an Observable, supplying only the `next` function.
 foreign import subscribeNext
   :: forall a e. (a -> Eff (|e) Unit)
   -> Observable a
-  -> Eff (|e) Unit
+  -> Eff (|e) Subscription
 
--- |  ### Creation Operators
 
+-- Creation Operators
 -- | An empty Observable that emits only the complete notification.
 foreign import _empty :: forall a. Observable a
 
@@ -62,7 +180,7 @@ foreign import interval :: Int -> Observable Int
 
 -- | Creates an Observable that emits the value specify,
 -- | and then emits a complete notification.  An alias for `of`.
-foreign import _just :: forall a. a -> Observable a
+foreign import just :: forall a. a -> Observable a
 
 -- | Creates an Observable that emits no items.  Subscriptions it must be
 -- | disposed manually.
@@ -75,7 +193,7 @@ range start length = runFn2 rangeImpl start length
 
 foreign import rangeImpl :: Fn2 Int Int (Observable Int)
 
--- |
+-- | Creates an Observable that immediately sends an error notification.
 foreign import throw :: forall a. Error -> Observable a
 
 -- | Creates an Observable that, upon subscription, emits and infinite sequence of ascending integers,
@@ -86,8 +204,7 @@ timer delay period = runFn2 timerImpl delay period
 
 foreign import timerImpl :: Fn2 Int Int (Observable Int)
 
--- | ### Transformation Operators
-
+-- Transformation Operators
 -- | Collects values from the first Observable into an Array, and emits that array only when
 -- | second Observable emits.
 foreign import buffer :: forall a b. Observable a -> Observable b -> Observable (Array a)
@@ -212,8 +329,7 @@ foreign import windowToggleImpl
 -- | It's like bufferWhen, but emits a nested Observable instead of an array.
 foreign import windowWhen :: forall a b. Observable a -> Observable b -> Observable (Observable a)
 
--- | ### Filtering Operators
-
+-- Filtering Operators
 -- | It's like auditTime, but the silencing duration is determined by a second Observable.
 foreign import audit :: forall a b. Observable a -> (a -> Observable b) -> Observable a
 
@@ -286,8 +402,7 @@ foreign import throttle :: forall a b. Observable a -> (a -> Observable b) -> Ob
 foreign import throttleTime :: forall a. Int -> Observable a -> Observable a
 
 
--- | ### Combination Operators
-
+-- Combination Operators
 -- | An Observable of projected values from the most recent values from each input Observable.
 foreign import combineLatest
   :: forall a b c. (a -> b -> c) -> Observable a -> Observable b -> Observable c
@@ -327,16 +442,14 @@ foreign import withLatestFrom
 -- | least one inner observable completes.
 foreign import zip :: forall a. Array (Observable a) -> Observable (Array a)
 
--- | ### Error Handling Operators
-
+-- Error Handling Operators
 foreign import catch :: forall a. (Observable a) -> (Error -> Observable a) -> (Observable a)
 
 -- | If the source Observable calls error, this method will resubscribe to the
 -- | source Observable n times rather than propagating the error call.
 foreign import retry :: forall a. Int -> Observable a -> Observable a
 
--- | ### Utility Operators
-
+-- Utility Operators
 -- | Time shifts each item by some specified amount of milliseconds.
 foreign import delay :: forall a. Int -> Observable a -> Observable a
 
@@ -364,6 +477,5 @@ foreign import performEach :: forall a e. Observable a -> (a -> Eff (|e) Unit) -
 
 foreign import toArray :: forall a. Observable a -> Observable (Array a)
 
--- | ### Aggregate Operators
-
+-- Aggregate Operators
 foreign import count :: forall a. Observable a -> Observable Int

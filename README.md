@@ -1,2 +1,13 @@
 # purescript-rxjs
-NOT READY FOR USE -- An un-opinionated PureScript wrapper for RxJS.
+An un-opinionated PureScript wrapper for RxJS.
+
+
+### Installation
+
+```bash
+npm install rxjs
+```
+
+### Documentation
+
+- See the `docs` folder.

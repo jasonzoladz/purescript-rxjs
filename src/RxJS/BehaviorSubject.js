@@ -1,7 +1,7 @@
 /* global exports */
 "use strict";
 
-// module RxJS.Observable
+// module RxJS.BehaviorSubject
 
 var Rx = require('rxjs');
 
@@ -20,6 +20,7 @@ exports.subscribeOn = function(s){
 }
 
 /**** Subscription ****/
+
 exports.subscribe = function(sub){
   return function(obs) {
     return function(){
@@ -42,26 +43,32 @@ exports.subscribeNext = function (eff){
   };
 }
 
+/**** Creation Operator ****/
 
-/**** Creation Operators ****/
 
-exports._empty = Rx.Observable.empty;
+exports.just = function(val){
+  return new Rx.BehaviorSubject(val);
+}
 
-exports.fromArray = Rx.Observable.from;
+/**** BehaviorSubject Operators ****/
 
-exports.fromEventImpl = Rx.Observable.fromEvent;
+exports.asObservable = function(bs){
+  return bs.asObservable();
+}
 
-exports.interval = Rx.Observable.interval;
+exports.getValue = function(bs){
+  return function() {
+    return bs.getValue();
+  };
+}
 
-exports.just = Rx.Observable.of;
-
-exports.never = Rx.Observable.never;
-
-exports.rangeImpl = Rx.Observable.range;
-
-exports.throw = Rx.Observable.throw;
-
-exports.timerImpl = Rx.Observable.timer;
+exports.next = function(val){
+  return function(bs){
+    return function(){
+      bs.next(val);
+    };
+  };
+}
 
 /**** Transformation Operators ****/
 
@@ -373,7 +380,7 @@ exports.mergeAll = function (obsobs){
 }
 
 exports.race = function(arrOfObs){
-  return Rx.Observable.race.apply(this, arrOfObs);
+  return Rx.BehaviorSubject.race.apply(this, arrOfObs);
 }
 
 exports.startWith = function (start) {
@@ -394,7 +401,7 @@ exports.withLatestFrom = function (f) {
 }
 
 exports.zip = function(arrOfObs){
-  return Rx.Observable.zip.apply(this, arrOfObs);
+  return Rx.BehaviorSubject.zip.apply(this, arrOfObs);
 }
 
 /**** Error Handling Operators ****/
