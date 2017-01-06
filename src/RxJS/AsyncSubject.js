@@ -46,7 +46,7 @@ exports.subscribeNext = function (eff){
 /**** Creation Operators ****/
 
 exports._empty = function(){
-  return new Rx.ReplaySubject();
+  return new Rx.AsyncSubject();
 }
 
 exports.just = function(val){
