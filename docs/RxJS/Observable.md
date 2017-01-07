@@ -515,6 +515,12 @@ combineLatest :: forall a b c. (a -> b -> c) -> Observable a -> Observable b -> 
 
 An Observable of projected values from the most recent values from each input Observable.
 
+#### `combineLatest3`
+
+``` purescript
+combineLatest3 :: forall a b c d. (a -> b -> c -> d) -> Observable a -> Observable b -> Observable c -> Observable d
+```
+
 #### `concat`
 
 ``` purescript

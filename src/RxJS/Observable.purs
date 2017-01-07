@@ -55,6 +55,7 @@ module RxJS.Observable
   , throttle
   , throttleTime
   , combineLatest
+  , combineLatest3
   , concat
   , concatAll
   , exhaust
@@ -409,6 +410,9 @@ foreign import throttleTime :: forall a. Int -> Observable a -> Observable a
 -- | An Observable of projected values from the most recent values from each input Observable.
 foreign import combineLatest
   :: forall a b c. (a -> b -> c) -> Observable a -> Observable b -> Observable c
+
+foreign import combineLatest3
+  :: forall a b c d. (a -> b -> c -> d) -> Observable a -> Observable b -> Observable c -> Observable d
 
 -- | Concatenates two Observables together by sequentially emitting their values, one Observable after the other.
 foreign import concat :: forall a. Observable a -> Observable a -> Observable a

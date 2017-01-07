@@ -348,6 +348,18 @@ exports.combineLatest = function (f) {
   };
 }
 
+exports.combineLatest3 = function(f){
+  return function(obs1){
+    return function(obs2){
+      return function(obs3){
+        return obs1.combineLatest(obs2, obs3, function(x,y,z){
+          return f(x)(y)(z);
+        });
+      };
+    };
+  };
+}
+
 exports.concat = function (obs1) {
   return function(obs2) {
     return obs1.concat(obs1);
