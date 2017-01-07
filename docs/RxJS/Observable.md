@@ -3,7 +3,7 @@
 #### `Observable`
 
 ``` purescript
-data Observable :: * -> *
+data Observable :: Type -> Type
 ```
 
 *Note*: A couple operators are not wrapped (namely, `bindCallback`, `bindNodeCallback`) because RxJS
@@ -649,5 +649,24 @@ toArray :: forall a. Observable a -> Observable (Array a)
 ``` purescript
 count :: forall a. Observable a -> Observable Int
 ```
+
+Counts the number of emissions on the source and emits that number when the source completes.
+
+#### `reduce`
+
+``` purescript
+reduce :: forall a b. (a -> b -> b) -> b -> Observable a -> Observable b
+```
+
+Applies an accumulator function over the source Observable, and returns the accumulated
+result when the source completes, given a seed value.
+
+#### `unwrap`
+
+``` purescript
+unwrap :: forall a e. Observable (Eff e a) -> Eff e (Observable a)
+```
+
+Run an Observable of effects
 
 

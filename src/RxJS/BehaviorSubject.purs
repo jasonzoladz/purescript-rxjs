@@ -442,4 +442,14 @@ foreign import toArray :: forall a. BehaviorSubject a -> BehaviorSubject (Array 
 
 -- Aggregate Operators
 
+-- | Counts the number of emissions on the source and emits that number when the source completes.
 foreign import count :: forall a. BehaviorSubject a -> BehaviorSubject Int
+
+-- | Applies an accumulator function over the source, and returns the accumulated
+-- | result when the source completes, given a seed value.
+foreign import reduce :: forall a b. (a -> b -> b) -> b -> BehaviorSubject a -> BehaviorSubject b
+
+-- Helper Functions
+
+  -- | Run a source's effects
+foreign import unwrap :: forall a e. BehaviorSubject (Eff e a) -> Eff e (BehaviorSubject a)

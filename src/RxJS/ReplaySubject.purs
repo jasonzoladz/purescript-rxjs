@@ -450,4 +450,14 @@ foreign import toArray :: forall a. ReplaySubject a -> ReplaySubject (Array a)
 
 -- Aggregate Operators
 
+-- | Counts the number of emissions on the source and emits that number when the source completes.
 foreign import count :: forall a. ReplaySubject a -> ReplaySubject Int
+
+-- | Applies an accumulator function over the source, and returns the accumulated
+-- | result when the source completes, given a seed value.
+foreign import reduce :: forall a b. (a -> b -> b) -> b -> ReplaySubject a -> ReplaySubject b
+
+-- Helper Functions
+
+  -- | Run a source's effects
+foreign import unwrap :: forall a e. ReplaySubject (Eff e a) -> Eff e (ReplaySubject a)

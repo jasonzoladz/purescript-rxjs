@@ -3,7 +3,7 @@
 #### `BehaviorSubject`
 
 ``` purescript
-data BehaviorSubject :: * -> *
+data BehaviorSubject :: Type -> Type
 ```
 
 Please see [RxJS Version 5.* documentation](http://reactivex.io/rxjs/) for
@@ -610,5 +610,7 @@ toArray :: forall a. BehaviorSubject a -> BehaviorSubject (Array a)
 ``` purescript
 count :: forall a. BehaviorSubject a -> BehaviorSubject Int
 ```
+
+Counts the number of emissions on the source and emits that number when the source completes.
 
 

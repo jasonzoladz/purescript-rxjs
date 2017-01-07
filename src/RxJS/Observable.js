@@ -499,3 +499,15 @@ exports.reduce = function (f){
     };
   };
 }
+
+
+/**** Helpers ****/
+
+exports.unwrap = function (obs) {
+  return function() {
+    return obs.map(function(eff) {
+      return eff();
+    });
+  };
+}
+

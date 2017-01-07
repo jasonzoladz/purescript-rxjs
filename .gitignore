@@ -6,3 +6,4 @@
 /.psa*
 
 /src/Main.purs
+/npm-debug.log

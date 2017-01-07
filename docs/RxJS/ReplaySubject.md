@@ -3,7 +3,7 @@
 #### `ReplaySubject`
 
 ``` purescript
-data ReplaySubject :: * -> *
+data ReplaySubject :: Type -> Type
 ```
 
 Please see [RxJS Version 5.* documentation](http://reactivex.io/rxjs/) for
@@ -606,5 +606,7 @@ toArray :: forall a. ReplaySubject a -> ReplaySubject (Array a)
 ``` purescript
 count :: forall a. ReplaySubject a -> ReplaySubject Int
 ```
+
+Counts the number of emissions on the source and emits that number when the source completes.
 
 
