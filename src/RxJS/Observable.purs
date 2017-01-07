@@ -22,6 +22,7 @@ module RxJS.Observable
   , expand
   , groupBy
   , mapTo
+  , mergeMap
   , mergeMapTo
   , pairwise
   , partition

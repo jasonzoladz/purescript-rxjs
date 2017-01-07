@@ -187,6 +187,15 @@ mapTo :: forall a b. b -> ReplaySubject a -> ReplaySubject b
 Emits the given constant value on the output ReplaySubject every time
 the source ReplaySubject emits a value.
 
+#### `mergeMap`
+
+``` purescript
+mergeMap :: forall a b. ReplaySubject a -> (a -> ReplaySubject b) -> ReplaySubject b
+```
+
+Maps each value to an ReplaySubject, then flattens all of these ReplaySubjects
+using mergeAll.  It's just monadic `bind`.
+
 #### `mergeMapTo`
 
 ``` purescript

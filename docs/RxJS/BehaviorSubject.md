@@ -191,6 +191,15 @@ mapTo :: forall a b. b -> BehaviorSubject a -> BehaviorSubject b
 Emits the given constant value on the output BehaviorSubject every time
 the source BehaviorSubject emits a value.
 
+#### `mergeMap`
+
+``` purescript
+mergeMap :: forall a b. BehaviorSubject a -> (a -> BehaviorSubject b) -> BehaviorSubject b
+```
+
+Maps each value to an BehaviorSubject, then flattens all of these BehaviorSubjects
+using mergeAll.  It's just monadic `bind`.
+
 #### `mergeMapTo`
 
 ``` purescript

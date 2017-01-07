@@ -171,6 +171,15 @@ mapTo :: forall a b. b -> AsyncSubject a -> AsyncSubject b
 Emits the given constant value on the output AsyncSubject every time
 the source AsyncSubject emits a value.
 
+#### `mergeMap`
+
+``` purescript
+mergeMap :: forall a b. AsyncSubject a -> (a -> AsyncSubject b) -> AsyncSubject b
+```
+
+Maps each value to an AsyncSubject, then flattens all of these AsyncSubjects
+using mergeAll.  It's just monadic `bind`.
+
 #### `mergeMapTo`
 
 ``` purescript

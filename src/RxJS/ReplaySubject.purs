@@ -18,6 +18,7 @@ module RxJS.ReplaySubject
   , expand
   , groupBy
   , mapTo
+  , mergeMap
   , mergeMapTo
   , pairwise
   , partition

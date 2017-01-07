@@ -16,6 +16,7 @@ module RxJS.AsyncSubject
   , expand
   , groupBy
   , mapTo
+  , mergeMap
   , mergeMapTo
   , pairwise
   , partition

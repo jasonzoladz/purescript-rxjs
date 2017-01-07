@@ -19,6 +19,7 @@ module RxJS.BehaviorSubject
   , expand
   , groupBy
   , mapTo
+  , mergeMap
   , mergeMapTo
   , pairwise
   , partition

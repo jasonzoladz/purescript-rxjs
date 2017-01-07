@@ -230,6 +230,15 @@ mapTo :: forall a b. b -> Observable a -> Observable b
 Emits the given constant value on the output Observable every time
 the source Observable emits a value.
 
+#### `mergeMap`
+
+``` purescript
+mergeMap :: forall a b. Observable a -> (a -> Observable b) -> Observable b
+```
+
+Maps each value to an Observable, then flattens all of these Observables
+using mergeAll.  It's just monadic `bind`.
+
 #### `mergeMapTo`
 
 ``` purescript
