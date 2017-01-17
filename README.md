@@ -8,7 +8,7 @@ An un-opinionated PureScript wrapper for RxJS.
 npm install rxjs
 ```
 
-I plan to package a release soon for bower/Pursuit.  Until then, you can include this library in you projects by adding the repo to your bower dependencies, like so:
+I plan to package a release soon for bower/Pursuit.  Until then, you can include this library in your projects by adding the repo to your bower dependencies, like so:
 
 ```javascript
 "dependencies": {
