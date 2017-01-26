@@ -33,6 +33,14 @@ exports.subscribe = function(sub){
   };
 }
 
+exports.subscribeObservableTo = function(obs){
+  return function(sub){
+    return function(){
+      return obs.subscribe(sub);
+    };
+  };
+}
+
 exports.subscribeNext = function (eff){
   return function(obs){
     return function(){

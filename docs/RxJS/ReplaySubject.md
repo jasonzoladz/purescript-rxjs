@@ -3,7 +3,7 @@
 #### `ReplaySubject`
 
 ``` purescript
-data ReplaySubject :: Type -> Type
+data ReplaySubject :: * -> *
 ```
 
 Please see [RxJS Version 5.* documentation](http://reactivex.io/rxjs/) for

@@ -497,4 +497,3 @@ foreign import reduce :: forall a b. (a -> b -> b) -> b -> Observable a -> Obser
 
   -- | Run an Observable of effects
 foreign import unwrap :: forall a e. Observable (Eff e a) -> Eff e (Observable a)
-

@@ -3,7 +3,7 @@
 #### `Subscription`
 
 ``` purescript
-data Subscription :: Type
+data Subscription :: *
 ```
 
 When you subscribe, you get back a Subscription, which represents the

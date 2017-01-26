@@ -141,6 +141,8 @@ foreign import subscribeOn :: forall a. Scheduler -> AsyncSubject a -> AsyncSubj
 -- | `next`, `error` and `completed` effects to which the data will be delivered.
 foreign import subscribe :: forall a e. Subscriber a -> AsyncSubject a ->  Eff (|e) Subscription
 
+foreign import subscribeObservableTo :: forall a e. Observable a -> AsyncSubject a -> Eff (|e) Subscription
+
 -- Subscribe to an AsyncSubject, supplying only the `next` function.
 foreign import subscribeNext
   :: forall a e. (a -> Eff (|e) Unit)

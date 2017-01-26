@@ -135,6 +135,8 @@ foreign import subscribeOn :: forall a. Scheduler -> BehaviorSubject a -> Behavi
 -- | `next`, `error` and `completed` effects to which the data will be delivered.
 foreign import subscribe :: forall a e. Subscriber a -> BehaviorSubject a ->  Eff (|e) Subscription
 
+foreign import subscribeObservableTo :: forall a e. Observable a -> BehaviorSubject a -> Eff (|e) Subscription  
+
 -- Subscribe to an BehaviorSubject, supplying only the `next` function.
 foreign import subscribeNext
   :: forall a e. (a -> Eff (|e) Unit)

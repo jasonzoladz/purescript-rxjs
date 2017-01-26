@@ -3,7 +3,7 @@
 #### `Observable`
 
 ``` purescript
-data Observable :: Type -> Type
+data Observable :: * -> *
 ```
 
 *Note*: A couple operators are not wrapped (namely, `bindCallback`, `bindNodeCallback`) because RxJS

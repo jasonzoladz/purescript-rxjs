@@ -3,7 +3,7 @@
 #### `AsyncSubject`
 
 ``` purescript
-data AsyncSubject :: Type -> Type
+data AsyncSubject :: * -> *
 ```
 
 Please see [RxJS Version 5.* documentation](http://reactivex.io/rxjs/) for

@@ -143,6 +143,8 @@ foreign import subscribeOn :: forall a. Scheduler -> ReplaySubject a -> ReplaySu
 -- | `next`, `error` and `completed` effects to which the data will be delivered.
 foreign import subscribe :: forall a e. Subscriber a -> ReplaySubject a ->  Eff (|e) Subscription
 
+foreign import subscribeObservableTo :: forall a e. Observable a -> ReplaySubject a -> Eff (|e) Subscription
+
 -- Subscribe to an ReplaySubject, supplying only the `next` function.
 foreign import subscribeNext
   :: forall a e. (a -> Eff (|e) Unit)
