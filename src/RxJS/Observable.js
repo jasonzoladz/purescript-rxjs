@@ -394,6 +394,13 @@ exports.startWith = function (start) {
   };
 }
 
+exports.startWithMany = function (arr) {
+  return function(ob) {
+    return arr.reduce(function(acc, cur) {
+      acc.startWith(cur)
+    }, ob)
+  };
+}
 
 exports.withLatestFrom = function (f) {
   return function (ob1) {
