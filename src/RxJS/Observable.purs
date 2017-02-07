@@ -435,9 +435,9 @@ foreign import mergeAll :: forall a. Observable (Observable a) -> Observable a
 -- | item from the array of Observables.
 foreign import race :: forall a. Array (Observable a) -> Observable a
 
--- | Returns an Observable that emits the items in the given Array before
+-- | Returns an Observable that emits the item given before
 -- | it begins to emit items emitted by the source Observable.
-foreign import startWith :: forall a. Array a -> Observable a -> Observable a
+foreign import startWith :: forall a. a -> Observable a -> Observable a
 
 -- | Combines each value from the source Observables using a project function to
 -- | determine the value to be emitted on the output Observable.
