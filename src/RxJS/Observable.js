@@ -396,8 +396,8 @@ exports.startWith = function (start) {
 
 exports.startWithMany = function (arr) {
   return function(ob) {
-    return arr.reduce(function(acc, cur) {
-      acc.startWith(cur)
+    return arr.reverse().reduce(function(acc, cur) {
+      return acc.startWith(cur)
     }, ob)
   };
 }
