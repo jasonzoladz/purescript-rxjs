@@ -63,6 +63,7 @@ module RxJS.Observable
   , mergeAll
   , race
   , startWith
+  , startWithMany
   , withLatestFrom
   , zip
   , catch
@@ -79,11 +80,8 @@ module RxJS.Observable
   )
   where
 
-import Control.Monad.Aff
-import Data.Array.ST
 import Data.Function.Eff
-import Data.Function
-import RxJS.Scheduler
+import RxJS.Scheduler (Scheduler)
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
 import Control.Monad.Eff (Eff)
