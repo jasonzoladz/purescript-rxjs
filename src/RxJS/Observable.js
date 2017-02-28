@@ -45,6 +45,10 @@ exports.subscribeNext = function (eff){
 
 /**** Creation Operators ****/
 
+exports.ajax = Rx.Observable.ajax;
+
+exports.ajaxWithBody = exports.ajax;
+
 exports._empty = Rx.Observable.empty;
 
 exports.fromArray = Rx.Observable.from;

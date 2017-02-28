@@ -81,7 +81,6 @@ module RxJS.Observable
   where
 
 import Data.Function.Eff
-import RxJS.Scheduler (Scheduler)
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
 import Control.Monad.Eff (Eff)
@@ -166,6 +165,38 @@ foreign import subscribeNext
 
 
 -- Creation Operators
+
+
+type Response =
+  { body :: String
+  , status :: Int
+  , responseType :: String
+  }
+
+type Request =
+  { url :: String
+  , data :: String
+  , timeout :: Int
+  , headers :: StrMap String
+  , crossDomain :: Boolean
+  , responseType :: String
+  }
+
+requestWithBody :: String -> String -> Request
+requestWithBody url body =
+  { url : url
+  , data : body
+  , timeout : 0
+  , headers : empty
+  , crossDomain : false
+  , responseType : ""
+  }
+
+
+foreign import ajax :: forall e. String -> Eff e (Observable Response)
+
+foreign import ajaxWithBody :: forall e. Request -> Eff e (Observable Response)
+
 -- | An empty Observable that emits only the complete notification.
 foreign import _empty :: forall a. Observable a
 
