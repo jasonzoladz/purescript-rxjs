@@ -467,9 +467,11 @@ foreign import mergeAll :: forall a. Observable (Observable a) -> Observable a
 -- | item from the array of Observables.
 foreign import race :: forall a. Array (Observable a) -> Observable a
 
--- | Returns an Observable that emits the items in the given Array before
+-- | Returns an Observable that emits the items in the given Foldable before
 -- | it begins to emit items emitted by the source Observable.
-foreign import startWithMany :: forall a. Array a -> Observable a -> Observable a
+startWithMany :: forall f a. Foldable f => f a -> Observable a -> Observable a
+startWithMany xs obs =
+  foldr (\cur acc -> startWith cur acc) obs xs
 
 -- | Returns an Observable that emits the item given before
 -- | it begins to emit items emitted by the source Observable.

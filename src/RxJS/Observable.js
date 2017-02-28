@@ -398,14 +398,6 @@ exports.startWith = function (start) {
   };
 }
 
-exports.startWithMany = function (arr) {
-  return function(ob) {
-    return arr.reverse().reduce(function(acc, cur) {
-      return acc.startWith(cur)
-    }, ob)
-  };
-}
-
 exports.withLatestFrom = function (f) {
   return function (ob1) {
     return function (ob2) {
