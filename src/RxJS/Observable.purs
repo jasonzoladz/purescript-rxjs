@@ -91,9 +91,12 @@ import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
 import DOM.Event.Types (Event, EventType(..), EventTarget)
+import Data.Foldable (foldr, class Foldable)
 import Data.Function.Uncurried (Fn2, Fn3, Fn4, runFn2, runFn3, runFn4)
+import Data.StrMap (StrMap, empty)
 import Prelude (class Semigroup, class Monad, class Bind, class Applicative, class Apply, class Functor, Unit, id, (<$>))
 import RxJS.Notification (Notification(OnComplete, OnError, OnNext))
+import RxJS.Scheduler (Scheduler)
 import RxJS.Subscriber (Subscriber)
 import RxJS.Subscription (Subscription)
 import Test.QuickCheck (class Arbitrary, arbitrary)
@@ -202,7 +205,7 @@ foreign import throw :: forall a. Error -> Observable a
 -- | after a specified delay, every specified period.  Delay and period are in
 -- | milliseconds.
 timer :: Int -> Int -> Observable Int
-timer delay period = runFn2 timerImpl delay period
+timer dly period = runFn2 timerImpl dly period
 
 foreign import timerImpl :: Fn2 Int Int (Observable Int)
 
@@ -485,6 +488,9 @@ materialize ob = runFn4 _materialize ob OnNext OnError OnComplete
 foreign import performEach :: forall a e. Observable a -> (a -> Eff (|e) Unit) -> Eff (|e) (Observable a)
 
 foreign import toArray :: forall a. Observable a -> Observable (Array a)
+
+
+foreign import defaultIfEmpty :: forall a. Observable a -> a -> Observable a
 
 -- Aggregate Operators
 
