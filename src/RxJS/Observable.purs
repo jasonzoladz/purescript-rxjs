@@ -185,16 +185,19 @@ type Request =
   , headers :: StrMap String
   , crossDomain :: Boolean
   , responseType :: String
+  , method :: String
   }
 
-requestWithBody :: String -> String -> Request
-requestWithBody url body =
+-- | Create a Request object with a given URL, Body and Method in that order
+requestWithBody :: String -> String -> String -> Request
+requestWithBody url body method =
   { url : url
   , data : body
   , timeout : 0
   , headers : empty
   , crossDomain : false
   , responseType : ""
+  , method : "GET"
   }
 
 
