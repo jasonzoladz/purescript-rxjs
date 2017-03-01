@@ -68,6 +68,7 @@ module RxJS.Observable
   , zip
   , catch
   , retry
+  , defaultIfEmpty
   , delay
   , delayWhen
   , dematerialize
