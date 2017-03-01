@@ -216,7 +216,7 @@ exports.windowToggleImpl = function(obs, openings, closingSelector){
 
 exports.windowWhen = function(obs){
   return function(closing){
-    return obs.windowWhen(closing);
+    return obs.windowWhen(function() { return closing });
   };
 }
 
