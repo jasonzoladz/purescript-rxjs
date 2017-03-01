@@ -197,7 +197,7 @@ requestWithBody url body method =
   , headers : empty
   , crossDomain : false
   , responseType : ""
-  , method : "GET"
+  , method : method
   }
 
 
