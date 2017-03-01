@@ -35,6 +35,8 @@ module RxJS.Observable
   , windowToggle
   , windowWhen
   , audit
+  , ajax
+  , ajaxWithBody
   , auditTime
   , debounce
   , debounceTime
@@ -78,6 +80,8 @@ module RxJS.Observable
   , count
   , reduce
   , unwrap
+  , Response
+  , Request
   )
   where
 
