@@ -125,6 +125,10 @@ exports.expand = function(obs){
   };
 }
 
+exports.share = function(obs){
+  return obs.share()
+}
+
 exports.groupBy = function(f){
   return function(obs){
     return obs.groupBy(f);

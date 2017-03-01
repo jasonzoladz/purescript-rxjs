@@ -533,6 +533,20 @@ foreign import toArray :: forall a. Observable a -> Observable (Array a)
 
 foreign import defaultIfEmpty :: forall a. Observable a -> a -> Observable a
 
+
+-- | Returns a new Observable that multicasts (shares) the original Observable. As long a
+-- | there is more than 1 Subscriber, this Observable will be subscribed and emitting data.
+-- | When all subscribers have unsubscribed it will unsubscribe from the source Observable.
+-- |
+-- | This is an alias for `publish().refCount()`
+-- |
+-- | <img width="640" height="510" src="https://raw.githubusercontent.com/wiki/ReactiveX/RxJava/images/rx-operators/publishRefCount.png" alt="" />
+-- |
+-- | returns an Observable that upon connection causes the source Observable to emit items to its Subscribers
+-- |
+-- |
+foreign import share :: forall a. Observable a -> Observable a
+
 -- Aggregate Operators
 
 -- | Counts the number of emissions on the source and emits that number when the source completes.
