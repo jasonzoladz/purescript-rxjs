@@ -47,7 +47,9 @@ module RxJS.Observable
   , ignoreElements
   , last
   , sample
+  , isEmpty
   , sampleTime
+  , share
   , skip
   , skipUntil
   , skipWhile
@@ -531,9 +533,23 @@ foreign import performEach :: forall a e. Observable a -> (a -> Eff (|e) Unit) -
 foreign import toArray :: forall a. Observable a -> Observable (Array a)
 
 
+
+-- | Returns an Observable that emits the items emitted by the source Observable or a specified default item
+-- | if the source Observable is empty.
+-- |
+-- | <img width="640" height="305" src="http://reactivex.io/documentation/operators/images/defaultIfEmpty.c.png" alt="" />
+-- |
+-- | takes a defaultValue which is the item to emit if the source Observable emits no items.
+-- |
+-- | returns an Observable that emits either the specified default item if the source Observable emits no
+-- |         items, or the items emitted by the source Observable
 foreign import defaultIfEmpty :: forall a. Observable a -> a -> Observable a
 
-
+-- | Tests whether this `Observable` emits no elements.
+-- |
+-- | returns an Observable emitting one single Boolean, which is `true` if this `Observable`
+-- |         emits no elements, and `false` otherwise.
+foreign import isEmpty :: forall a. Observable a -> Observable Boolean
 -- | Returns a new Observable that multicasts (shares) the original Observable. As long a
 -- | there is more than 1 Subscriber, this Observable will be subscribed and emitting data.
 -- | When all subscribers have unsubscribed it will unsubscribe from the source Observable.
@@ -543,8 +559,6 @@ foreign import defaultIfEmpty :: forall a. Observable a -> a -> Observable a
 -- | <img width="640" height="510" src="https://raw.githubusercontent.com/wiki/ReactiveX/RxJava/images/rx-operators/publishRefCount.png" alt="" />
 -- |
 -- | returns an Observable that upon connection causes the source Observable to emit items to its Subscribers
--- |
--- |
 foreign import share :: forall a. Observable a -> Observable a
 
 -- Aggregate Operators

@@ -78,6 +78,8 @@ main = do
         liftEff ((groupBy length observable2) # subObservable)
       test "ignoreElements" do
         liftEff ((ignoreElements observable) # subObservable)
+      test "isEmpty" do
+        liftEff ((isEmpty observable) # subObservable)
       test "map" do
         liftEff ((map length observable2) # subObservable)
       test "mapTo" do
@@ -102,6 +104,8 @@ main = do
         liftEff ((sample observable observable2) # subObservable)
       test "sampleTime" do
         liftEff ((sampleTime 1000 observable) # subObservable)
+      test "share" do
+        liftEff ((share observable) # subObservable)
       test "skip" do
         liftEff ((skip 2 observable) # subObservable)
       test "skipUntil" do
