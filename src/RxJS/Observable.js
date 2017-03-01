@@ -59,7 +59,7 @@ exports.interval = Rx.Observable.interval;
 
 exports.just = Rx.Observable.of;
 
-exports.never = Rx.Observable.never;
+exports.never = Rx.Observable.never();
 
 exports.rangeImpl = Rx.Observable.range;
 
