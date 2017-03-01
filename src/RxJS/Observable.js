@@ -45,7 +45,11 @@ exports.subscribeNext = function (eff){
 
 /**** Creation Operators ****/
 
-exports._empty = Rx.Observable.empty;
+exports.ajax = Rx.Observable.ajax;
+
+exports.ajaxWithBody = exports.ajax;
+
+exports._empty = Rx.Observable.empty();
 
 exports.fromArray = Rx.Observable.from;
 
@@ -55,7 +59,7 @@ exports.interval = Rx.Observable.interval;
 
 exports.just = Rx.Observable.of;
 
-exports.never = Rx.Observable.never;
+exports.never = Rx.Observable.never();
 
 exports.rangeImpl = Rx.Observable.range;
 
@@ -119,6 +123,10 @@ exports.expand = function(obs){
   return function(f){
     return obs.expand(f);
   };
+}
+
+exports.share = function(obs){
+  return obs.share()
 }
 
 exports.groupBy = function(f){
@@ -212,7 +220,7 @@ exports.windowToggleImpl = function(obs, openings, closingSelector){
 
 exports.windowWhen = function(obs){
   return function(closing){
-    return obs.windowWhen(closing);
+    return obs.windowWhen(function() { return closing });
   };
 }
 
@@ -330,8 +338,8 @@ exports.throttle = function(obs){
   };
 }
 
-exports.throttleTime = function(obs){
-  return function(ms){
+exports.throttleTime = function(ms){
+  return function(obs){
     return obs.throttleTime(ms);
   };
 }
@@ -391,14 +399,6 @@ exports.race = function(arrOfObs){
 exports.startWith = function (start) {
   return function(ob) {
     return ob.startWith(start);
-  };
-}
-
-exports.startWithMany = function (arr) {
-  return function(ob) {
-    return arr.reverse().reduce(function(acc, cur) {
-      return acc.startWith(cur)
-    }, ob)
   };
 }
 

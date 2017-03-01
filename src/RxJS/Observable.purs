@@ -35,6 +35,8 @@ module RxJS.Observable
   , windowToggle
   , windowWhen
   , audit
+  , ajax
+  , ajaxWithBody
   , auditTime
   , debounce
   , debounceTime
@@ -45,7 +47,9 @@ module RxJS.Observable
   , ignoreElements
   , last
   , sample
+  , isEmpty
   , sampleTime
+  , share
   , skip
   , skipUntil
   , skipWhile
@@ -63,10 +67,12 @@ module RxJS.Observable
   , mergeAll
   , race
   , startWith
+  , startWithMany
   , withLatestFrom
   , zip
   , catch
   , retry
+  , defaultIfEmpty
   , delay
   , delayWhen
   , dematerialize
@@ -76,14 +82,12 @@ module RxJS.Observable
   , count
   , reduce
   , unwrap
+  , Response
+  , Request
   )
   where
 
-import Control.Monad.Aff
-import Data.Array.ST
 import Data.Function.Eff
-import Data.Function
-import RxJS.Scheduler
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
 import Control.Monad.Eff (Eff)
@@ -93,9 +97,12 @@ import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
 import DOM.Event.Types (Event, EventType(..), EventTarget)
+import Data.Foldable (foldr, class Foldable)
 import Data.Function.Uncurried (Fn2, Fn3, Fn4, runFn2, runFn3, runFn4)
+import Data.StrMap (StrMap, empty)
 import Prelude (class Semigroup, class Monad, class Bind, class Applicative, class Apply, class Functor, Unit, id, (<$>))
 import RxJS.Notification (Notification(OnComplete, OnError, OnNext))
+import RxJS.Scheduler (Scheduler)
 import RxJS.Subscriber (Subscriber)
 import RxJS.Subscription (Subscription)
 import Test.QuickCheck (class Arbitrary, arbitrary)
@@ -165,6 +172,41 @@ foreign import subscribeNext
 
 
 -- Creation Operators
+
+
+type Response =
+  { body :: String
+  , status :: Int
+  , responseType :: String
+  }
+
+type Request =
+  { url :: String
+  , data :: String
+  , timeout :: Int
+  , headers :: StrMap String
+  , crossDomain :: Boolean
+  , responseType :: String
+  , method :: String
+  }
+
+-- | Create a Request object with a given URL, Body and Method in that order
+requestWithBody :: String -> String -> String -> Request
+requestWithBody url body method =
+  { url : url
+  , data : body
+  , timeout : 0
+  , headers : empty
+  , crossDomain : false
+  , responseType : ""
+  , method : method
+  }
+
+
+foreign import ajax :: forall e. String -> Eff e (Observable Response)
+
+foreign import ajaxWithBody :: forall e. Request -> Eff e (Observable Response)
+
 -- | An empty Observable that emits only the complete notification.
 foreign import _empty :: forall a. Observable a
 
@@ -204,7 +246,7 @@ foreign import throw :: forall a. Error -> Observable a
 -- | after a specified delay, every specified period.  Delay and period are in
 -- | milliseconds.
 timer :: Int -> Int -> Observable Int
-timer delay period = runFn2 timerImpl delay period
+timer dly period = runFn2 timerImpl dly period
 
 foreign import timerImpl :: Fn2 Int Int (Observable Int)
 
@@ -435,9 +477,11 @@ foreign import mergeAll :: forall a. Observable (Observable a) -> Observable a
 -- | item from the array of Observables.
 foreign import race :: forall a. Array (Observable a) -> Observable a
 
--- | Returns an Observable that emits the items in the given Array before
+-- | Returns an Observable that emits the items in the given Foldable before
 -- | it begins to emit items emitted by the source Observable.
-foreign import startWithMany :: forall a. Array a -> Observable a -> Observable a
+startWithMany :: forall f a. Foldable f => f a -> Observable a -> Observable a
+startWithMany xs obs =
+  foldr (\cur acc -> startWith cur acc) obs xs
 
 -- | Returns an Observable that emits the item given before
 -- | it begins to emit items emitted by the source Observable.
@@ -487,6 +531,35 @@ materialize ob = runFn4 _materialize ob OnNext OnError OnComplete
 foreign import performEach :: forall a e. Observable a -> (a -> Eff (|e) Unit) -> Eff (|e) (Observable a)
 
 foreign import toArray :: forall a. Observable a -> Observable (Array a)
+
+
+
+-- | Returns an Observable that emits the items emitted by the source Observable or a specified default item
+-- | if the source Observable is empty.
+-- |
+-- | <img width="640" height="305" src="http://reactivex.io/documentation/operators/images/defaultIfEmpty.c.png" alt="" />
+-- |
+-- | takes a defaultValue which is the item to emit if the source Observable emits no items.
+-- |
+-- | returns an Observable that emits either the specified default item if the source Observable emits no
+-- |         items, or the items emitted by the source Observable
+foreign import defaultIfEmpty :: forall a. Observable a -> a -> Observable a
+
+-- | Tests whether this `Observable` emits no elements.
+-- |
+-- | returns an Observable emitting one single Boolean, which is `true` if this `Observable`
+-- |         emits no elements, and `false` otherwise.
+foreign import isEmpty :: forall a. Observable a -> Observable Boolean
+-- | Returns a new Observable that multicasts (shares) the original Observable. As long a
+-- | there is more than 1 Subscriber, this Observable will be subscribed and emitting data.
+-- | When all subscribers have unsubscribed it will unsubscribe from the source Observable.
+-- |
+-- | This is an alias for `publish().refCount()`
+-- |
+-- | <img width="640" height="510" src="https://raw.githubusercontent.com/wiki/ReactiveX/RxJava/images/rx-operators/publishRefCount.png" alt="" />
+-- |
+-- | returns an Observable that upon connection causes the source Observable to emit items to its Subscribers
+foreign import share :: forall a. Observable a -> Observable a
 
 -- Aggregate Operators
 
