@@ -334,8 +334,8 @@ exports.throttle = function(obs){
   };
 }
 
-exports.throttleTime = function(obs){
-  return function(ms){
+exports.throttleTime = function(ms){
+  return function(obs){
     return obs.throttleTime(ms);
   };
 }
