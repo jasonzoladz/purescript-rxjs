@@ -80,6 +80,8 @@ main = do
         liftEff ((ignoreElements observable) # subObservable)
       test "isEmpty" do
         liftEff ((isEmpty observable) # subObservable)
+      test "last" do
+        liftEff ((last observable # subObservable))
       test "map" do
         liftEff ((map length observable2) # subObservable)
       test "mapTo" do
