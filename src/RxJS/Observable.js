@@ -280,8 +280,10 @@ exports.ignoreElements = function(obs){
   return obs.ignoreElements();
 }
 
-exports.last = function (ob){
-    return ob.last();
+exports.last = function(ob){
+  return function(p){
+    return ob.first(p);
+  };
 }
 
 exports.sample = function(obs1){

@@ -413,8 +413,9 @@ foreign import filter :: forall a. (a -> Boolean) -> Observable a -> Observable 
 -- | Ignores all items emitted by the source Observable and only passes calls of complete or error.
 foreign import ignoreElements :: forall a. Observable a -> Observable a
 
--- | Returns an Observable that emits only the last item emitted by the source Observable.
-foreign import last :: forall a. Observable a -> Observable a
+-- | Returns an Observable that emits only the last item emitted by the source
+-- | Observable that that satisfies the given predicate.
+foreign import last :: forall a. Observable a -> (a -> Boolean) -> Observable a
 
 -- | It's like sampleTime, but samples whenever the notifier Observable emits something.
 foreign import sample :: forall a b. Observable a -> Observable b -> Observable a
