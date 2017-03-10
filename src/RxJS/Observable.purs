@@ -99,6 +99,7 @@ import Control.Plus (class Plus)
 import DOM.Event.Types (Event, EventType(..), EventTarget)
 import Data.Foldable (foldr, class Foldable)
 import Data.Function.Uncurried (Fn2, Fn3, Fn4, runFn2, runFn3, runFn4)
+import Data.Monoid (class Monoid)
 import Data.StrMap (StrMap, empty)
 import Prelude (class Semigroup, class Monad, class Bind, class Applicative, class Apply, class Functor, Unit, id, (<$>))
 import RxJS.Notification (Notification(OnComplete, OnError, OnNext))
@@ -131,7 +132,10 @@ instance bindObservable :: Bind Observable where
 instance monadObservable :: Monad Observable
 
 instance semigroupObservable :: Semigroup (Observable a) where
-  append = concat
+  append = merge
+
+instance monoidObservable :: Monoid (Observable a) where
+  mempty = _empty
 
 instance altObservable :: Alt Observable where
   alt = merge
