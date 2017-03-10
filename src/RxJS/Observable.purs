@@ -162,13 +162,13 @@ foreign import subscribeOn :: forall a. Scheduler -> Observable a -> Observable 
 
 -- | Subscribing to an Observable is like calling a function, providing
 -- | `next`, `error` and `completed` effects to which the data will be delivered.
-foreign import subscribe :: forall a e. Subscriber a -> Observable a ->  Eff (|e) Subscription
+foreign import subscribe :: forall a e. Subscriber a -> Observable a ->  Eff e Subscription
 
 -- Subscribe to an Observable, supplying only the `next` function.
 foreign import subscribeNext
-  :: forall a e. (a -> Eff (|e) Unit)
+  :: forall a e. (a -> Eff e Unit)
   -> Observable a
-  -> Eff (|e) Subscription
+  -> Eff e Subscription
 
 
 -- Creation Operators
@@ -217,7 +217,7 @@ foreign import fromArray :: forall a. Array a -> Observable a
 fromEvent :: forall e. EventTarget -> EventType -> Eff e (Observable Event)
 fromEvent target (EventType str) = runEffFn2 fromEventImpl target str
 
-foreign import fromEventImpl :: forall e. EffFn2 (|e) EventTarget String (Observable Event)
+foreign import fromEventImpl :: forall e. EffFn2 e EventTarget String (Observable Event)
 
 -- | Returns an Observable that emits an infinite sequence of ascending
 -- | integers, with a constant interval of time of your choosing between those
@@ -528,7 +528,7 @@ materialize ob = runFn4 _materialize ob OnNext OnError OnComplete
 -- | Performs the effect on each value of the Observable.  An alias for `do`.
 -- | Useful for testing (transparently performing an effect outside of a subscription).
 
-foreign import performEach :: forall a e. Observable a -> (a -> Eff (|e) Unit) -> Eff (|e) (Observable a)
+foreign import performEach :: forall a e. Observable a -> (a -> Eff e Unit) -> Eff e (Observable a)
 
 foreign import toArray :: forall a. Observable a -> Observable (Array a)
 
