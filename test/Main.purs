@@ -1,17 +1,14 @@
 module Test.Main where
 
-import Prelude
-import Test.Unit.QuickCheck
 import RxJS.Observable
+import Prelude (Unit, bind, const, map, pure, unit, (#), (+), (<), (>))
 import Control.Monad.Aff.AVar (AVAR)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (CONSOLE)
-import Control.Monad.Eff.Exception (error)
 import Control.MonadPlus (empty)
 import Data.String (length)
 import Test.Unit (suite, test)
-import Test.Unit.Assert (assert, expectFailure)
 import Test.Unit.Console (TESTOUTPUT)
 import Test.Unit.Main (exit, runTest)
 
