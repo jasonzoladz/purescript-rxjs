@@ -494,8 +494,8 @@ exports.defaultIfEmpty = function(obs){
   };
 }
 
-exports.every = function(pred){
-  return function(obs){
+exports.every = function(obs){
+  return function(pred){
     return obs.every(pred);
   };
 }
@@ -531,4 +531,3 @@ exports.unwrap = function (obs) {
     });
   };
 }
-

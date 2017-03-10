@@ -8,6 +8,7 @@ module RxJS.Observable
   , fromEvent
   , interval
   , just
+  , every
   , never
   , range
   , throw
@@ -550,6 +551,13 @@ foreign import toArray :: forall a. Observable a -> Observable (Array a)
 -- | returns an Observable that emits either the specified default item if the source Observable emits no
 -- |         items, or the items emitted by the source Observable
 foreign import defaultIfEmpty :: forall a. Observable a -> a -> Observable a
+
+
+
+-- | Determines whether all elements of an observable sequence satisfy a condition.
+-- | Returns an observable sequence containing a single element determining whether all
+-- | elements in the source sequence pass the test in the specified predicate.
+foreign import every :: forall a. Observable a -> (a -> Boolean) -> Observable Boolean
 
 -- | Tests whether this `Observable` emits no elements.
 -- |

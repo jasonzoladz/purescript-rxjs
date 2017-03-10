@@ -72,6 +72,8 @@ main = do
         liftEff ((elementAt observable 2) # subObservable)
       test "expand" do
         liftEff ((expand observable (\x -> if (x < 3) then just (x + 1) else empty)) # subObservable)
+      test "every" do
+        liftEff ((every observable (_ > 3) # subObservable))
       test "filter" do
         liftEff ((filter (_ > 2) observable) # subObservable)
       test "groupBy" do
