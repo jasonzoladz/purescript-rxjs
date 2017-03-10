@@ -45,6 +45,7 @@ module RxJS.Observable
   , elementAt
   , filter
   , ignoreElements
+  , first
   , last
   , sample
   , isEmpty
@@ -565,6 +566,10 @@ foreign import isEmpty :: forall a. Observable a -> Observable Boolean
 -- |
 -- | returns an Observable that upon connection causes the source Observable to emit items to its Subscribers
 foreign import share :: forall a. Observable a -> Observable a
+
+-- | Returns an Observable that emits only the first item emitted by the source
+-- | Observable that satisfies the given predicate.
+foreign import first :: forall a. Observable a -> (a -> Boolean) -> Observable a
 
 -- Aggregate Operators
 

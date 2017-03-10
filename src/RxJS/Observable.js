@@ -270,8 +270,8 @@ exports.filter = function (p){
   };
 }
 
-exports.first = function (p){
-  return function(ob){
+exports.first = function(ob){
+  return function(p){
     return ob.first(p);
   };
 }
