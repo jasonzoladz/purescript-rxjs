@@ -71,28 +71,21 @@ module RxJS.ReplaySubject
   , count
   ) where
 
-import Control.Monad.Aff
-import Data.Array.ST
-import Data.Function.Eff
-import Data.Function
-import RxJS.Scheduler
+
+import RxJS.Scheduler (Scheduler)
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Exception (Error)
-import Control.Monad.Error.Class (class MonadError)
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
-import DOM.Event.Types (Event, EventType(..), EventTarget)
-import Data.Function.Uncurried (Fn2, Fn3, Fn4, runFn2, runFn3, runFn4)
-import Prelude (class Semigroup, class Monad, class Bind, class Applicative, class Apply, class Functor, Unit, id, (<$>), unit)
+import Data.Function.Uncurried (Fn3, Fn4, runFn3, runFn4)
+import Prelude (class Semigroup, class Monad, class Bind, class Applicative, class Apply, class Functor, Unit, id, unit)
 import RxJS.Notification (Notification(OnComplete, OnError, OnNext))
 import RxJS.Observable (Observable)
 import RxJS.Subscriber (Subscriber)
 import RxJS.Subscription (Subscription)
-import Test.QuickCheck (class Arbitrary, arbitrary)
-import Test.QuickCheck.Gen (arrayOf)
 
 
 -- | Please see [RxJS Version 5.* documentation](http://reactivex.io/rxjs/) for

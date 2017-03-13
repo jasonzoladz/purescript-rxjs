@@ -1,17 +1,14 @@
 module Test.Main where
 
-import Prelude
-import Test.Unit.QuickCheck
 import RxJS.Observable
+import Prelude (Unit, bind, const, map, pure, unit, (#), (+), (<), (>))
 import Control.Monad.Aff.AVar (AVAR)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (CONSOLE)
-import Control.Monad.Eff.Exception (error)
 import Control.MonadPlus (empty)
 import Data.String (length)
 import Test.Unit (suite, test)
-import Test.Unit.Assert (assert, expectFailure)
 import Test.Unit.Console (TESTOUTPUT)
 import Test.Unit.Main (exit, runTest)
 
@@ -72,6 +69,8 @@ main = do
         liftEff ((elementAt observable 2) # subObservable)
       test "expand" do
         liftEff ((expand observable (\x -> if (x < 3) then just (x + 1) else empty)) # subObservable)
+      test "every" do
+        liftEff ((every observable (_ > 3) # subObservable))
       test "filter" do
         liftEff ((filter (_ > 2) observable) # subObservable)
       test "groupBy" do
@@ -80,6 +79,10 @@ main = do
         liftEff ((ignoreElements observable) # subObservable)
       test "isEmpty" do
         liftEff ((isEmpty observable) # subObservable)
+      test "first" do
+        liftEff ((first observable (const true) # subObservable))
+      test "last" do
+        liftEff ((last observable (const true) # subObservable))
       test "map" do
         liftEff ((map length observable2) # subObservable)
       test "mapTo" do

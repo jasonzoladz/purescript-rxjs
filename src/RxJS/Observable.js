@@ -270,8 +270,8 @@ exports.filter = function (p){
   };
 }
 
-exports.first = function (p){
-  return function(ob){
+exports.first = function(ob){
+  return function(p){
     return ob.first(p);
   };
 }
@@ -280,8 +280,10 @@ exports.ignoreElements = function(obs){
   return obs.ignoreElements();
 }
 
-exports.last = function (ob){
-    return ob.last();
+exports.last = function(ob){
+  return function(p){
+    return ob.first(p);
+  };
 }
 
 exports.sample = function(obs1){
@@ -475,11 +477,6 @@ exports.performEach = function(obs){
   };
 }
 
-exports.scheduleOn = function(obs){
-  return function(scheduler){
-    return obs.scheduleOn(scheduler);
-  };
-}
 exports.toArray = function(obs){
   return obs.toArray();
 }
@@ -492,8 +489,8 @@ exports.defaultIfEmpty = function(obs){
   };
 }
 
-exports.every = function(pred){
-  return function(obs){
+exports.every = function(obs){
+  return function(pred){
     return obs.every(pred);
   };
 }
@@ -529,4 +526,3 @@ exports.unwrap = function (obs) {
     });
   };
 }
-
