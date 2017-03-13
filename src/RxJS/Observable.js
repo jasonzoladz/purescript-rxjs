@@ -45,7 +45,11 @@ exports.subscribeNext = function (eff){
 
 /**** Creation Operators ****/
 
-exports.ajax = Rx.Observable.ajax;
+exports.ajax = function(req) {
+  return function() {
+    return Rx.Observable.ajax(req)
+  }
+}
 
 exports.ajaxWithBody = exports.ajax;
 
