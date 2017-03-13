@@ -119,6 +119,9 @@ import Test.QuickCheck.Gen (arrayOf)
 
 foreign import data Observable :: * -> *
 
+instance monoidObservable :: Monoid (Observable a) where
+  mempty = _empty
+
 instance functorObservable :: Functor Observable where
   map = _map
 
@@ -133,11 +136,9 @@ instance bindObservable :: Bind Observable where
 
 instance monadObservable :: Monad Observable
 
+-- | NOTE: The semigroup instance uses `merge` NOT `concat`.
 instance semigroupObservable :: Semigroup (Observable a) where
   append = merge
-
-instance monoidObservable :: Monoid (Observable a) where
-  mempty = _empty
 
 instance altObservable :: Alt Observable where
   alt = merge

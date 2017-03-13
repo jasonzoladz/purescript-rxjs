@@ -112,8 +112,9 @@ instance bindAsyncSubject :: Bind AsyncSubject where
 
 instance monadAsyncSubject :: Monad AsyncSubject
 
+-- | NOTE: The semigroup instance uses `merge` NOT `concat`.
 instance semigroupAsyncSubject :: Semigroup (AsyncSubject a) where
-  append = concat
+  append = merge
 
 instance altAsyncSubject :: Alt AsyncSubject where
   alt = merge

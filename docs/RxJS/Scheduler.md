@@ -3,7 +3,7 @@
 #### `Scheduler`
 
 ``` purescript
-data Scheduler :: *
+data Scheduler :: Type
 ```
 
 Please see [RxJS Version 5.* documentation](http://reactivex.io/rxjs/) for
