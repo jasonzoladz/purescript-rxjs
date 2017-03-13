@@ -3,7 +3,7 @@
 #### `Observable`
 
 ``` purescript
-data Observable :: * -> *
+data Observable :: Type -> Type
 ```
 
 *Note*: A couple operators are not wrapped (namely, `bindCallback`, `bindNodeCallback`) because RxJS
@@ -14,6 +14,7 @@ additional details on proper usage of the library.
 
 ##### Instances
 ``` purescript
+Monoid (Observable a)
 Functor Observable
 Apply Observable
 Applicative Observable
@@ -58,6 +59,30 @@ Subscribing to an Observable is like calling a function, providing
 
 ``` purescript
 subscribeNext :: forall a e. (a -> Eff e Unit) -> Observable a -> Eff e Subscription
+```
+
+#### `Response`
+
+``` purescript
+type Response = { body :: String, status :: Int, responseType :: String }
+```
+
+#### `Request`
+
+``` purescript
+type Request = { url :: String, "data" :: String, timeout :: Int, headers :: StrMap String, crossDomain :: Boolean, responseType :: String, method :: String }
+```
+
+#### `ajax`
+
+``` purescript
+ajax :: forall e. String -> Eff e (Observable Response)
+```
+
+#### `ajaxWithBody`
+
+``` purescript
+ajaxWithBody :: forall e. Request -> Eff e (Observable Response)
 ```
 
 #### `fromArray`
@@ -572,13 +597,22 @@ race :: forall a. Array (Observable a) -> Observable a
 Returns an Observable that mirrors the first source Observable to emit an
 item from the array of Observables.
 
+#### `startWithMany`
+
+``` purescript
+startWithMany :: forall f a. Foldable f => f a -> Observable a -> Observable a
+```
+
+Returns an Observable that emits the items in the given Foldable before
+it begins to emit items emitted by the source Observable.
+
 #### `startWith`
 
 ``` purescript
-startWith :: forall a. Array a -> Observable a -> Observable a
+startWith :: forall a. a -> Observable a -> Observable a
 ```
 
-Returns an Observable that emits the items in the given Array before
+Returns an Observable that emits the item given before
 it begins to emit items emitted by the source Observable.
 
 #### `withLatestFrom`
@@ -658,6 +692,49 @@ Useful for testing (transparently performing an effect outside of a subscription
 ``` purescript
 toArray :: forall a. Observable a -> Observable (Array a)
 ```
+
+#### `defaultIfEmpty`
+
+``` purescript
+defaultIfEmpty :: forall a. Observable a -> a -> Observable a
+```
+
+Returns an Observable that emits the items emitted by the source Observable or a specified default item
+if the source Observable is empty.
+
+<img width="640" height="305" src="http://reactivex.io/documentation/operators/images/defaultIfEmpty.c.png" alt="" />
+
+takes a defaultValue which is the item to emit if the source Observable emits no items.
+
+returns an Observable that emits either the specified default item if the source Observable emits no
+        items, or the items emitted by the source Observable
+
+#### `isEmpty`
+
+``` purescript
+isEmpty :: forall a. Observable a -> Observable Boolean
+```
+
+Tests whether this `Observable` emits no elements.
+
+returns an Observable emitting one single Boolean, which is `true` if this `Observable`
+        emits no elements, and `false` otherwise.
+
+#### `share`
+
+``` purescript
+share :: forall a. Observable a -> Observable a
+```
+
+Returns a new Observable that multicasts (shares) the original Observable. As long a
+there is more than 1 Subscriber, this Observable will be subscribed and emitting data.
+When all subscribers have unsubscribed it will unsubscribe from the source Observable.
+
+This is an alias for `publish().refCount()`
+
+<img width="640" height="510" src="https://raw.githubusercontent.com/wiki/ReactiveX/RxJava/images/rx-operators/publishRefCount.png" alt="" />
+
+returns an Observable that upon connection causes the source Observable to emit items to its Subscribers
 
 #### `count`
 

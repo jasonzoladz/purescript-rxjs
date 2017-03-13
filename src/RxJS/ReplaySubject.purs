@@ -107,8 +107,9 @@ instance bindReplaySubject :: Bind ReplaySubject where
 
 instance monadReplaySubject :: Monad ReplaySubject
 
+-- | NOTE: The semigroup instance uses `merge` NOT `concat`.
 instance semigroupReplaySubject :: Semigroup (ReplaySubject a) where
-  append = concat
+  append = merge
 
 instance altReplaySubject :: Alt ReplaySubject where
   alt = merge
