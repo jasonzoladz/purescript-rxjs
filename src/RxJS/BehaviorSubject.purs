@@ -114,8 +114,9 @@ instance bindBehaviorSubject :: Bind BehaviorSubject where
 
 instance monadBehaviorSubject :: Monad BehaviorSubject
 
+-- | NOTE: The semigroup instance uses `merge` NOT `concat`.
 instance semigroupBehaviorSubject :: Semigroup (BehaviorSubject a) where
-  append = concat
+  append = merge
 
 instance altBehaviorSubject :: Alt BehaviorSubject where
   alt = merge
@@ -135,7 +136,7 @@ foreign import subscribeOn :: forall a. Scheduler -> BehaviorSubject a -> Behavi
 -- | `next`, `error` and `completed` effects to which the data will be delivered.
 foreign import subscribe :: forall a e. Subscriber a -> BehaviorSubject a ->  Eff (|e) Subscription
 
-foreign import subscribeObservableTo :: forall a e. Observable a -> BehaviorSubject a -> Eff (|e) Subscription  
+foreign import subscribeObservableTo :: forall a e. Observable a -> BehaviorSubject a -> Eff (|e) Subscription
 
 -- Subscribe to an BehaviorSubject, supplying only the `next` function.
 foreign import subscribeNext

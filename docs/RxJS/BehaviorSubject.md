@@ -3,7 +3,7 @@
 #### `BehaviorSubject`
 
 ``` purescript
-data BehaviorSubject :: * -> *
+data BehaviorSubject :: Type -> Type
 ```
 
 Please see [RxJS Version 5.* documentation](http://reactivex.io/rxjs/) for

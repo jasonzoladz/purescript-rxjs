@@ -4,6 +4,6 @@
 /output/
 /.psc*
 /.psa*
-
+/yarn.lock
 /src/Main.purs
 /npm-debug.log
