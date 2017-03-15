@@ -189,7 +189,7 @@ type Response =
 
 type Request =
   { url :: String
-  , data :: String
+  , body :: String
   , timeout :: Int
   , headers :: StrMap String
   , crossDomain :: Boolean
@@ -201,7 +201,7 @@ type Request =
 requestWithBody :: String -> String -> String -> Request
 requestWithBody url body method =
   { url : url
-  , data : body
+  , body : body
   , timeout : 0
   , headers : empty
   , crossDomain : false
