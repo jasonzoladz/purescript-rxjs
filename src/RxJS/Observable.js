@@ -5,6 +5,13 @@
 
 var Rx = require('rxjs');
 
+
+function removeEff(fn) {
+  return function(a){
+    return fn(a)()
+  }
+}
+
 /**** Scheduling ****/
 
 exports.observeOn = function(s){
@@ -463,6 +470,10 @@ exports._materialize = function (ob, Next, Error, Complete) {
       case 'C': return Complete;
     }
   });
+}
+
+exports.create = function(fn) {
+  return Rx.Observable.create(fn)
 }
 
 exports.dematerialize = function (ob) {

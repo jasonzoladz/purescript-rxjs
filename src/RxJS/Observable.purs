@@ -8,6 +8,7 @@ module RxJS.Observable
   , fromEvent
   , interval
   , just
+  , create
   , every
   , never
   , range
@@ -86,6 +87,7 @@ module RxJS.Observable
   , unwrap
   , Response
   , Request
+  , RX
   )
   where
 
@@ -117,7 +119,8 @@ import Test.QuickCheck.Gen (arrayOf)
 -- | Please see [RxJS Version 5.* documentation](http://reactivex.io/rxjs/) for
 -- | additional details on proper usage of the library.
 
-foreign import data Observable :: * -> *
+foreign import data Observable :: Type -> Type
+foreign import data RX :: Effect
 
 instance monoidObservable :: Monoid (Observable a) where
   mempty = _empty
@@ -169,13 +172,13 @@ foreign import subscribeOn :: forall a. Scheduler -> Observable a -> Observable 
 
 -- | Subscribing to an Observable is like calling a function, providing
 -- | `next`, `error` and `completed` effects to which the data will be delivered.
-foreign import subscribe :: forall a e. Subscriber a -> Observable a ->  Eff e Subscription
+foreign import subscribe :: forall a e. Subscriber a -> Observable a ->  Eff (rx :: RX | e) Subscription
 
 -- Subscribe to an Observable, supplying only the `next` function.
 foreign import subscribeNext
   :: forall a e. (a -> Eff e Unit)
   -> Observable a
-  -> Eff e Subscription
+  -> Eff (rx :: RX | e) Subscription
 
 
 -- Creation Operators
@@ -237,6 +240,8 @@ foreign import interval :: Int -> Observable Int
 -- | and then emits a complete notification.  An alias for `of`.
 -- | ![marble diagram](https://raw.githubusercontent.com/wiki/ReactiveX/RxJava/images/rx-operators/from.png)
 foreign import just :: forall a. a -> Observable a
+
+foreign import create :: forall a e u. (Subscriber a -> Eff e u) -> Eff (rx:: RX | e) (Observable a)
 
 -- | Creates an Observable that emits no items.  Subscriptions it must be
 -- | disposed manually.
