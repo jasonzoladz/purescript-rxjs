@@ -91,7 +91,7 @@ import RxJS.Subscription (Subscription)
 -- | Please see [RxJS Version 5.* documentation](http://reactivex.io/rxjs/) for
 -- | additional details on proper usage of the library.
 
-foreign import data ReplaySubject :: * -> *
+foreign import data ReplaySubject :: Type -> Type
 
 instance functorReplaySubject :: Functor ReplaySubject where
   map = _map

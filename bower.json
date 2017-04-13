@@ -7,28 +7,23 @@
     "output"
   ],
   "dependencies": {
-    "purescript-prelude": "^2.1.0",
-    "purescript-console": "^2.0.0",
-    "purescript-functions": "^2.0.0",
-    "purescript-exceptions": "^2.0.0",
-    "purescript-aff": "^2.0.2",
-    "purescript-arrays": "^3.1.0",
-    "purescript-st": "^2.0.0",
-    "purescript-dom": "^3.3.1",
-    "purescript-eff-functions": "^2.0.0",
-    "purescript-quickcheck": "^3.1.1",
-    "purescript-maps" : "^2.1.2"
+    "purescript-prelude": "^3.0.0",
+    "purescript-console": "^3.0.0",
+    "purescript-functions": "^3.0.0",
+    "purescript-exceptions": "^3.0.0",
+    "purescript-aff": "^3.0.0",
+    "purescript-arrays": "^4.0.0",
+    "purescript-st": "^3.0.0",
+    "purescript-dom": "^4.1.0",
+    "purescript-maps" : "^3.0.0"
   },
   "devDependencies": {
-    "purescript-psci-support": "^2.0.0",
-    "purescript-debug": "^2.0.0",
-    "purescript-test-unit": "^10.0.1",
-    "purescript-quickcheck": "^3.1.1"
+    "purescript-psci-support": "^3.0.0",
+    "purescript-debug": "^3.0.0",
+    "purescript-test-unit": "^11.0.0",
+    "purescript-quickcheck": "^4.0.0"
   },
   "license": "MIT",
-  "resolutions": {
-    "purescript-quickcheck": "^3.1.1"
-  },
   "repository": {
     "type": "git",
     "url": "git://github.com/jasonzoladz/purescript-rxjs.git"
