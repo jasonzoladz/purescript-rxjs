@@ -89,12 +89,12 @@ module RxJS.Observable
   )
   where
 
-import Data.Function.Eff
+import Control.Monad.Eff.Uncurried
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Exception (Error)
-import Control.Monad.Error.Class (class MonadError)
+import Control.Monad.Error.Class (class MonadError, class MonadThrow)
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
@@ -117,7 +117,7 @@ import Test.QuickCheck.Gen (arrayOf)
 -- | Please see [RxJS Version 5.* documentation](http://reactivex.io/rxjs/) for
 -- | additional details on proper usage of the library.
 
-foreign import data Observable :: * -> *
+foreign import data Observable :: Type -> Type
 
 instance monoidObservable :: Monoid (Observable a) where
   mempty = _empty
@@ -154,6 +154,8 @@ instance monadPlusObservable :: MonadPlus Observable
 
 instance monadErrorObservable :: MonadError Error Observable where
   catchError = catch
+
+instance monadThrowObservable :: MonadThrow Error Observable where
   throwError = throw
 
 instance arbitraryObservable :: Arbitrary a => Arbitrary (Observable a) where

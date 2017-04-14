@@ -1,7 +1,7 @@
 module Test.Main where
 
 import RxJS.Observable
-import Prelude (Unit, bind, const, map, pure, unit, (#), (+), (<), (>))
+import Prelude (Unit, bind, const, map, pure, unit, (#), (+), (<), (>), discard)
 import Control.Monad.Aff.AVar (AVAR)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Class (liftEff)
