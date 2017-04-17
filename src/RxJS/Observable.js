@@ -175,11 +175,11 @@ exports.mergeMapTo = function(obs1){
   };
 }
 
-exports.pairwise = function(obs){
+exports.pairwiseImpl = function(obs){
   return obs.pairwise();
 }
 
-exports.partition = function(pred){
+exports.partitionImpl = function(pred){
   return function(obs){
     return obs.partition(pred);
   };
@@ -303,7 +303,7 @@ exports.last = function(ob){
 
 exports.sample = function(obs1){
   return function(obs2){
-    return obs1.sample(obs2);
+    return obs2.sample(obs1);
   };
 }
 
@@ -321,7 +321,7 @@ exports.skip = function(n){
 
 exports.skipUntil = function(obs1){
   return function(obs2){
-    return obs1.skipUntil(obs2);
+    return obs2.skipUntil(obs1);
   };
 }
 
@@ -343,9 +343,9 @@ exports.takeUntil = function (other) {
   };
 }
 
-exports.takeWhile = function (p){
-  return function(obs){
-    return obs.takeWhile(p);
+exports.takeWhile = function (obs1){
+  return function(obs2){
+    return obs2.takeWhile(obs1);
   };
 }
 

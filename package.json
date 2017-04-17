@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "start": "node node_modules/.bin/webpack-dev-server --inline --hot" 
+    "start": "node node_modules/.bin/webpack-dev-server --inline --hot" ,
+    "test" : "pulp browserify -I test -m Test.Main -t index.js && phantomjs index.js"
   },
   "repository": {
     "type": "git",

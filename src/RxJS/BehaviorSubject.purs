@@ -72,14 +72,15 @@ module RxJS.BehaviorSubject
   , count
   ) where
 
-import RxJS.Scheduler (Scheduler)
 import Control.Alt (class Alt)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Exception (Error)
+import Control.Plus (class Plus)
 import Data.Function.Uncurried (Fn3, Fn4, runFn3, runFn4)
-import Prelude (class Semigroup, class Monad, class Bind, class Applicative, class Apply, class Functor, Unit, id)
+import Prelude (class Applicative, class Apply, class Bind, class Functor, class Monad, class Semigroup, Unit, id)
 import RxJS.Notification (Notification(OnComplete, OnError, OnNext))
 import RxJS.Observable (Observable)
+import RxJS.Scheduler (Scheduler)
 import RxJS.Subscriber (Subscriber)
 import RxJS.Subscription (Subscription)
 
@@ -108,6 +109,9 @@ instance semigroupBehaviorSubject :: Semigroup (BehaviorSubject a) where
 
 instance altBehaviorSubject :: Alt BehaviorSubject where
   alt = merge
+
+instance plusBehaviorSubject :: Plus BehaviorSubject where
+  empty = _empty
 
 -- Scheduling
 
@@ -138,6 +142,9 @@ foreign import subscribeNext
 -- | Creates an BehaviorSubject that emits the value specify,
 -- | and then emits a complete notification.  An alias for `of`.
 foreign import just :: forall a. a -> BehaviorSubject a
+
+
+foreign import _empty :: forall a. BehaviorSubject a
 
 -- BehaviorSubject Operators
 
@@ -172,6 +179,10 @@ foreign import bufferCount :: forall a. Int -> Int -> BehaviorSubject a -> Behav
 -- | emission.  The third argument is the maximum size of any buffer.
 bufferTime :: forall a. Int -> Int -> Int -> (BehaviorSubject a) -> (BehaviorSubject (Array a))
 bufferTime = runFn4 bufferTimeImpl
+
+
+
+
 
 foreign import bufferTimeImpl :: forall a. Fn4 Int Int Int (BehaviorSubject a) (BehaviorSubject (Array a))
 

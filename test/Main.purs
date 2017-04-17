@@ -7,6 +7,7 @@ import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (CONSOLE)
 import Control.MonadPlus (empty)
 import ObservableSpec (observableSpec, subObservable)
+import ObservableTSpec (observableTSpec)
 import Prelude (Unit, (#), discard)
 import Test.Unit (suite, test)
 import Test.Unit.Console (TESTOUTPUT)
@@ -31,4 +32,5 @@ main = do
       test "just" do
         liftEff ((just "Hello World!") # subObservable)
     observableSpec
+    observableTSpec
   (exit 0)

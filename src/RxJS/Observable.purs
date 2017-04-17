@@ -17,6 +17,7 @@ module RxJS.Observable
   , buffer
   , bufferCount
   , bufferToggle
+  , bufferTime
   , bufferWhen
   , concatMap
   , concatMapTo
@@ -92,28 +93,29 @@ module RxJS.Observable
   where
 
 import Control.Monad.Eff.Uncurried
-import Control.Monad.Eff (kind Effect)
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
-import Control.Monad.Eff (Eff)
+import Control.Monad.Eff (Eff, kind Effect)
 import Control.Monad.Eff.Exception (Error)
-import Control.Monad.Error.Class (class MonadError)
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
 import DOM.Event.Types (Event, EventType(..), EventTarget)
 import Data.Foldable (foldr, class Foldable)
+import Data.Tuple (Tuple(..))
 import Data.Function.Uncurried (Fn2, Fn3, Fn4, runFn2, runFn3, runFn4)
 import Data.Monoid (class Monoid)
+import Data.Array.Partial (head, last) as Array
 import Data.StrMap (StrMap, empty)
-import Control.Monad.Error.Class (class MonadThrow)
-import Prelude (class Semigroup, class Monad, class Bind, class Applicative, class Apply, class Functor, Unit, id, (<$>))
+import Control.Monad.Error.Class (class MonadThrow, class MonadError)
+import Prelude (class Semigroup, class Monad, class Bind, class Applicative, class Apply, class Functor, Unit, id, (<$>), map)
 import RxJS.Notification (Notification(OnComplete, OnError, OnNext))
 import RxJS.Scheduler (Scheduler)
 import RxJS.Subscriber (Subscriber)
 import RxJS.Subscription (Subscription)
 import Test.QuickCheck (class Arbitrary, arbitrary)
 import Test.QuickCheck.Gen (arrayOf)
+import Partial.Unsafe (unsafePartial)
 
 -- | *Note*: A couple operators are not wrapped (namely, `bindCallback`, `bindNodeCallback`) because RxJS
 -- | implementation details prevent giving the operators an "honest" PureScript type.
@@ -363,15 +365,29 @@ foreign import mergeMap :: forall a b. Observable a -> (a -> Observable b) -> Ob
 -- | ![marble diagram](http://reactivex.io/documentation/operators/images/flatMap.c.png)
 foreign import mergeMapTo :: forall a b. Observable a -> Observable b -> Observable b
 
--- | Puts the current value and previous value together as an array, and emits that.
+-- | Puts the current value and previous value together as a Tuple, and emits that.
 -- | ![marble diagram](http://reactivex.io/rxjs/img/pairwise.png)
-foreign import pairwise :: forall a. Observable a -> Observable (Array a)
+pairwise :: forall a. Observable a -> Observable (Tuple a a)
+pairwise src =
+  let arrays = pairwiseImpl src
+      toTuple arr = unsafePartial (Tuple (Array.head arr) (Array.last arr))
+  in map toTuple arrays
+
+
+foreign import pairwiseImpl :: forall a. Observable a -> Observable (Array a)
+
 
 -- | Given a predicate function (arg1), and an Observable (arg2), it outputs a
--- | two element array of partitioned values
--- | (i.e., [ Observable valuesThatPassPredicate, Observable valuesThatFailPredicate ]).
+-- | two element Tuple of partitioned values
+-- | (i.e., Tuple Observable valuesThatPassPredicate, Observable valuesThatFailPredicate ).
 -- | ![marble diagram](http://reactivex.io/rxjs/img/partition.png)
-foreign import partition :: forall a. (a -> Boolean) -> Observable a -> Array (Observable a)
+partition :: forall a. (a -> Boolean) -> Observable a -> Tuple (Observable a) (Observable a)
+partition predicate src =
+  let partitioned = partitionImpl predicate src
+      toTuple arr = unsafePartial (Tuple (Array.head arr) (Array.last arr))
+  in toTuple partitioned
+
+foreign import partitionImpl :: forall a. (a -> Boolean) -> Observable a -> Array (Observable a)
 
 -- | Given an accumulator function (arg1), an initial value (arg2), and
 -- | a source Observable (arg3), it returns an Observable that emits the current
@@ -463,7 +479,7 @@ foreign import last :: forall a. Observable a -> (a -> Boolean) -> Observable a
 
 -- | It's like sampleTime, but samples whenever the notifier Observable emits something.
 -- | ![marble diagram](https://raw.githubusercontent.com/wiki/ReactiveX/RxJava/images/rx-operators/sample.o.png)
-foreign import sample :: forall a b. Observable a -> Observable b -> Observable a
+foreign import sample :: forall a b. Observable b -> Observable a -> Observable a
 
 -- | Periodically looks at the source Observable and emits whichever
 -- | value it has most recently emitted since the previous sampling, unless the source has not emitted anything since the previous sampling.
@@ -475,7 +491,7 @@ foreign import skip :: forall a. Int -> Observable a -> Observable a
 
 -- | Returns an Observable that skips items emitted by the source Observable until a second Observable emits an item.
 -- | ![marble diagram](https://raw.githubusercontent.com/wiki/ReactiveX/RxJava/images/rx-operators/skipUntil.png)
-foreign import skipUntil :: forall a b. Observable a -> Observable b -> Observable a
+foreign import skipUntil :: forall a b. Observable b -> Observable a -> Observable a
 
 -- | Returns an Observable that skips all items emitted
 -- | by the source Observable as long as a specified condition holds true,
@@ -489,7 +505,7 @@ foreign import take :: forall a. Int -> Observable a -> Observable a
 
 -- | Lets values pass until a second Observable emits something. Then, it completes.
 -- | ![marble diagram](https://raw.githubusercontent.com/wiki/ReactiveX/RxJava/images/rx-operators/takeUntil.png" alt=""
-foreign import takeUntil :: forall a b. Observable a -> Observable b -> Observable a
+foreign import takeUntil :: forall a b. Observable b -> Observable a -> Observable a
 
 -- | Emits values emitted by the source Observable so long as each value satisfies
 -- | the given predicate, and then completes as soon as this predicate is not satisfied.
@@ -566,7 +582,7 @@ foreign import zip :: forall a. Array (Observable a) -> Observable (Array a)
 
 -- Error Handling Operators
 -- | ![marble diagram](http://reactivex.io/documentation/operators/images/catch.js.png)
-foreign import catch :: forall a. (Observable a) -> (Error -> Observable a) -> (Observable a)
+foreign import catch :: forall a. Observable a -> (Error -> Observable a) -> Observable a
 
 -- | If the source Observable calls error, this method will resubscribe to the
 -- | source Observable n times rather than propagating the error call.
