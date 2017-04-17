@@ -6,7 +6,7 @@ import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (CONSOLE)
 import Data.String (length)
-import Prelude (Unit, bind, const, map, pure, unit, (#), (<), (>))
+import Prelude (Unit, bind, const, map, pure, unit, (#), (<), (>), discard)
 import Test.Unit (TestSuite, suite, test)
 import Test.Unit.Console (TESTOUTPUT)
 

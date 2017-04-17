@@ -91,7 +91,8 @@ module RxJS.Observable
   )
   where
 
-import Data.Function.Eff
+import Control.Monad.Eff.Uncurried
+import Control.Monad.Eff (kind Effect)
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
 import Control.Monad.Eff (Eff)
@@ -105,6 +106,7 @@ import Data.Foldable (foldr, class Foldable)
 import Data.Function.Uncurried (Fn2, Fn3, Fn4, runFn2, runFn3, runFn4)
 import Data.Monoid (class Monoid)
 import Data.StrMap (StrMap, empty)
+import Control.Monad.Error.Class (class MonadThrow)
 import Prelude (class Semigroup, class Monad, class Bind, class Applicative, class Apply, class Functor, Unit, id, (<$>))
 import RxJS.Notification (Notification(OnComplete, OnError, OnNext))
 import RxJS.Scheduler (Scheduler)
@@ -157,6 +159,8 @@ instance monadPlusObservable :: MonadPlus Observable
 
 instance monadErrorObservable :: MonadError Error Observable where
   catchError = catch
+
+instance monadThrowObservable :: MonadThrow Error Observable where
   throwError = throw
 
 instance arbitraryObservable :: Arbitrary a => Arbitrary (Observable a) where

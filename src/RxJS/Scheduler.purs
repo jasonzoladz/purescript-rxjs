@@ -3,14 +3,14 @@ module RxJS.Scheduler
   , queue
   , asap
   , async
-  , animationFrame  
+  , animationFrame
   )
   where
 
 -- | Please see [RxJS Version 5.* documentation](http://reactivex.io/rxjs/) for
 -- | additional details on proper usage of the library.
 
-foreign import data Scheduler :: *
+foreign import data Scheduler :: Type
 
 foreign import queue :: Scheduler
 

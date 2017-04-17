@@ -86,7 +86,7 @@ import RxJS.Subscription (Subscription)
 -- | Please see [RxJS Version 5.* documentation](http://reactivex.io/rxjs/) for
 -- | additional details on proper usage of the library.
 
-foreign import data BehaviorSubject :: * -> *
+foreign import data BehaviorSubject :: Type -> Type
 
 instance functorBehaviorSubject :: Functor BehaviorSubject where
   map = _map

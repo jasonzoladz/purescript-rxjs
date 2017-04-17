@@ -88,7 +88,7 @@ import RxJS.Subscription (Subscription)
 -- | additional details on proper usage of the library.
 
 
-foreign import data AsyncSubject :: * -> *
+foreign import data AsyncSubject :: Type -> Type
 
 instance functorAsyncSubject :: Functor AsyncSubject where
   map = _map
