@@ -1,29 +1,11 @@
-module RxJS.Observable.Trans (
-    ObservableT,
-    combineLatest,
-    merge,
-    fromObservable,
-    liftF,
-    mergeAll,
-    just,
-    scan,
-    throw,
-    fromArray,
-    never,
-    fromEvent,
-    mergeMap,
-    interval,
-    filter,
-    subscribe,
-    subscribeNext
-  ) where
+module RxJS.Observable.Trans where
 
 import RxJS.Observable as Observable
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative, class Apply)
 import Control.Applicative (class Applicative)
 import Control.Monad (class Monad)
-import Control.Monad.Eff (Eff)
+import Control.Monad.Eff (Eff, runPure)
 import Control.Monad.Eff.Exception (Error)
 import Control.Monad.Eff.Unsafe (unsafePerformEff)
 import Control.MonadPlus (class MonadPlus)
@@ -36,7 +18,7 @@ import Data.Monoid (class Monoid)
 import Data.Foldable (class Foldable)
 import Data.Unit (unit)
 import Data.Tuple (Tuple(..), fst, snd)
-import Prelude (class Bind, class Functor, class Semigroup, Unit, bind, flip, id, map, pure, (#), ($), (<$>), (<*>), (<<<), (>>>))
+import Prelude (class Bind, class Functor, class Semigroup, Unit, bind, flip, id, map, pure, (#), (<$>), (<*>))
 import RxJS.Observable (Observable, RX, Request, Response)
 import RxJS.Subscriber (Subscriber)
 import RxJS.Scheduler (Scheduler)
@@ -105,8 +87,8 @@ liftF :: forall a f. Applicative f => f a -> ObservableT f a
 liftF f = ObservableT (map pure f)
 
 
-mergeAll :: forall a m. Monad m => ObservableT m (ObservableT m a) -> ObservableT m a
-mergeAll (ObservableT outer) =
+mergeAll_ :: forall a m. Monad m => ObservableT m (ObservableT m a) -> ObservableT m a
+mergeAll_ (ObservableT outer) =
   let observable = Observable.create (\subscriber -> do
         let subscription =
               map (\inner -> unsafePerformEff (flattenHelper inner subscriber)) outer
@@ -156,6 +138,8 @@ timer :: forall f. Applicative f => Int -> Int -> ObservableT f Int
 timer dly period = ObservableT (pure (Observable.timer dly period))
 
 
+create :: forall a e u. (Subscriber a -> Eff e u) -> ObservableT (Eff (rx:: RX | e)) a
+create fn = ObservableT (Observable.create fn)
 
 -- | Collects values from the first Observable into an Array, and emits that array only when
 -- | second Observable emits.
@@ -195,18 +179,22 @@ pairwise = mapObs Observable.pairwise
 -- | ![marble diagram](http://reactivex.io/rxjs/img/partition.png)
 partition :: forall a f. Applicative f => (a -> Boolean) -> ObservableT f a -> Tuple (ObservableT f a) (ObservableT f a)
 partition predicate (ObservableT src) =
-  let partitioned = map (Observable.partition predicate) src -- f Tuple2
-      first = ObservableT (map fst partitioned)
-      second = ObservableT (map snd partitioned)
-  in Tuple first second
+  let partitioned = map (Observable.partition predicate) src
+      firstT = ObservableT (map fst partitioned)
+      secondT = ObservableT (map snd partitioned)
+  in Tuple firstT secondT
 
 
 mergeMap :: forall a b m. Monad m => ObservableT m a -> (a -> ObservableT m b) -> ObservableT m b
-mergeMap ma f = mergeAll (map f ma)
+mergeMap ma f = mergeAll_ (map f ma)
 
 scan :: forall a b f. Functor f => (a -> b -> b) -> b -> ObservableT f a -> ObservableT f b
 scan reducer seed = mapObs (Observable.scan reducer seed)
 
+
+-- | It's like delay, but passes only the most recent value from each burst of emissions.
+debounceTime :: forall a f. Functor f => Int -> ObservableT f a -> ObservableT f a
+debounceTime time = mapObs (Observable.debounceTime time)
 -- | Returns an Observable that emits all items emitted by the source Observable
 -- | that are distinct by comparison from previous items.
 -- | ![marble diagram](http://reactivex.io/documentation/operators/images/distinct.png)
@@ -222,7 +210,7 @@ distinctUntilChanged = mapObs Observable.distinctUntilChanged
 -- | Emits the single value at the specified index in a sequence of emissions
 -- | from the source Observable.
 elementAt :: forall a f. Functor f => Int -> ObservableT f a -> ObservableT f a
-elementAt index = mapObs ((flip Observable.elementAt) index)
+elementAt index = mapObs (Observable.elementAt index)
 
 -- | Filter items emitted by the source Observable by only emitting those that
 -- | satisfy a specified predicate.
@@ -239,7 +227,7 @@ ignoreElements = mapObs Observable.ignoreElements
 -- | Observable that that satisfies the given predicate.
 -- | ![marble diagram](https://raw.githubusercontent.com/wiki/ReactiveX/RxJava/images/rx-operators/last.png)
 last :: forall a f. Functor f => (a -> Boolean) -> ObservableT f a -> ObservableT f a
-last predicate = mapObs ((flip Observable.last) predicate)
+last predicate = mapObs (Observable.last predicate)
 
 
 -- | It's like sampleTime, but samples whenever the notifier Observable emits something.
@@ -335,6 +323,55 @@ retry amount = mapObs (Observable.retry amount)
 delay :: forall a f. Functor f => Int -> ObservableT f a -> ObservableT f a
 delay ms = mapObs (Observable.delay ms)
 
+
+
+-- | Returns an Observable that emits the items emitted by the source Observable or a specified default item
+-- | if the source Observable is empty.
+-- |
+-- | ![marble diagram](http://reactivex.io/documentation/operators/images/defaultIfEmpty.c.png)
+-- |
+-- | takes a defaultValue which is the item to emit if the source Observable emits no items.
+-- |
+-- | returns an Observable that emits either the specified default item if the source Observable emits no
+-- |         items, or the items emitted by the source Observable
+defaultIfEmpty :: forall a f. Functor f => a -> ObservableT f a -> ObservableT f a
+defaultIfEmpty default = mapObs (Observable.defaultIfEmpty default)
+
+
+-- | Determines whether all elements of an observable sequence satisfy a condition.
+-- | Returns an observable sequence containing a single element determining whether all
+-- | elements in the source sequence pass the test in the specified predicate.
+every :: forall a f. Functor f => (a -> Boolean) -> ObservableT f a -> ObservableT f Boolean
+every predicate = mapObs (Observable.every predicate)
+-- | Tests whether this `Observable` emits no elements.
+-- |
+-- | returns an Observable emitting one single Boolean, which is `true` if this `Observable`
+-- |         emits no elements, and `false` otherwise.
+isEmpty :: forall a f. Functor f => ObservableT f a -> ObservableT f Boolean
+isEmpty = mapObs Observable.isEmpty
+-- | Returns a new Observable that multicasts (shares) the original Observable. As long a
+-- | there is more than 1 Subscriber, this Observable will be subscribed and emitting data.
+-- | When all subscribers have unsubscribed it will unsubscribe from the source Observable.
+-- |
+-- | This is an alias for `publish().refCount()`
+-- |
+-- | ![marble diagram](https://raw.githubusercontent.com/wiki/ReactiveX/RxJava/images/rx-operators/publishRefCount.png)
+-- |
+-- | returns an Observable that upon connection causes the source Observable to emit items to its Subscribers
+share :: forall a f. Functor f => ObservableT f a -> ObservableT f a
+share = mapObs Observable.share
+-- | Returns an Observable that emits only the first item emitted by the source
+-- | Observable that satisfies the given predicate.
+first :: forall a f. Functor f => (a -> Boolean) -> ObservableT f a -> ObservableT f a
+first predicate = mapObs (Observable.first predicate)
+
+-- | Counts the number of emissions on the source and emits that number when the source completes.
+count :: forall a f. Functor f => ObservableT f a -> ObservableT f Int
+count = mapObs Observable.count
+-- | Applies an accumulator function over the source Observable, and returns the accumulated
+-- | result when the source completes, given a seed value.
+reduce :: forall a b f. Functor f => (a -> b -> b) -> b -> ObservableT f a -> ObservableT f b
+reduce accumulator seed = mapObs (Observable.reduce accumulator seed)
 
 -- | Makes every `next` call run in the new Scheduler.
 observeOn :: forall a f. Functor f => Scheduler -> ObservableT f a -> ObservableT f a

@@ -273,8 +273,8 @@ exports.distinctUntilChanged = function (ob){
   return ob.distinctUntilChanged();
 }
 
-exports.elementAt = function(obs){
-  return function(i){
+exports.elementAt = function(i){
+  return function(obs){
     return obs.elementAt(i);
   };
 }
@@ -285,8 +285,8 @@ exports.filter = function (p){
   };
 }
 
-exports.first = function(ob){
-  return function(p){
+exports.first = function(p){
+  return function(ob){
     return ob.first(p);
   };
 }
@@ -295,9 +295,9 @@ exports.ignoreElements = function(obs){
   return obs.ignoreElements();
 }
 
-exports.last = function(ob){
-  return function(p){
-    return ob.first(p);
+exports.last = function(p){
+  return function(ob){
+    return ob.last(p);
   };
 }
 
@@ -473,7 +473,9 @@ exports._materialize = function (ob, Next, Error, Complete) {
 }
 
 exports.create = function(fn) {
-  return Rx.Observable.create(fn)
+  return function() {
+    return Rx.Observable.create(fn)
+  }
 }
 
 exports.dematerialize = function (ob) {
@@ -502,14 +504,14 @@ exports.toArray = function(obs){
 
 /**** Conditional and Boolean Operators ****/
 
-exports.defaultIfEmpty = function(obs){
-  return function(val){
+exports.defaultIfEmpty = function(val){
+  return function(obs){
     return obs.defaultIfEmpty(val);
   };
 }
 
-exports.every = function(obs){
-  return function(pred){
+exports.every = function(pred){
+  return function(obs){
     return obs.every(pred);
   };
 }

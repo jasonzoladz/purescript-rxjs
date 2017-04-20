@@ -461,7 +461,7 @@ foreign import distinctUntilChanged :: forall a. Observable a -> Observable a
 
 -- | Emits the single value at the specified index in a sequence of emissions
 -- | from the source Observable.
-foreign import elementAt :: forall a. Observable a -> Int -> Observable a
+foreign import elementAt :: forall a. Int -> Observable a -> Observable a
 
 -- | Filter items emitted by the source Observable by only emitting those that
 -- | satisfy a specified predicate.
@@ -475,7 +475,7 @@ foreign import ignoreElements :: forall a. Observable a -> Observable a
 -- | Returns an Observable that emits only the last item emitted by the source
 -- | Observable that that satisfies the given predicate.
 -- | ![marble diagram](https://raw.githubusercontent.com/wiki/ReactiveX/RxJava/images/rx-operators/last.png)
-foreign import last :: forall a. Observable a -> (a -> Boolean) -> Observable a
+foreign import last :: forall a. (a -> Boolean) ->  Observable a -> Observable a
 
 -- | It's like sampleTime, but samples whenever the notifier Observable emits something.
 -- | ![marble diagram](https://raw.githubusercontent.com/wiki/ReactiveX/RxJava/images/rx-operators/sample.o.png)
@@ -638,14 +638,14 @@ foreign import toArray :: forall a. Observable a -> Observable (Array a)
 -- |
 -- | returns an Observable that emits either the specified default item if the source Observable emits no
 -- |         items, or the items emitted by the source Observable
-foreign import defaultIfEmpty :: forall a. Observable a -> a -> Observable a
+foreign import defaultIfEmpty :: forall a. a -> Observable a -> Observable a
 
 
 
 -- | Determines whether all elements of an observable sequence satisfy a condition.
 -- | Returns an observable sequence containing a single element determining whether all
 -- | elements in the source sequence pass the test in the specified predicate.
-foreign import every :: forall a. Observable a -> (a -> Boolean) -> Observable Boolean
+foreign import every :: forall a. (a -> Boolean) -> Observable a -> Observable Boolean
 
 -- | Tests whether this `Observable` emits no elements.
 -- |
@@ -665,7 +665,7 @@ foreign import share :: forall a. Observable a -> Observable a
 
 -- | Returns an Observable that emits only the first item emitted by the source
 -- | Observable that satisfies the given predicate.
-foreign import first :: forall a. Observable a -> (a -> Boolean) -> Observable a
+foreign import first :: forall a. (a -> Boolean) -> Observable a -> Observable a
 
 -- Aggregate Operators
 
