@@ -1,12 +1,12 @@
 # purescript-rxjs
-An un-opinionated PureScript wrapper for RxJS.
+An opinionated PureScript wrapper for RxJS, complete with a Monad Transformer `ObservableT`
 
 
 ### Installation
 
 ```bash
 npm install rxjs
-bower install purescript-rxjs
+bower install purescript-rx-observable
 ```
 
 ### Documentation

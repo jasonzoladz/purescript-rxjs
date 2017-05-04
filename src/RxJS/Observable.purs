@@ -107,7 +107,7 @@ import Data.Monoid (class Monoid)
 import Data.StrMap (StrMap, empty)
 import Data.Tuple (Tuple(..), fst, snd)
 import Partial.Unsafe (unsafePartial)
-import Prelude (class Applicative, class Apply, class Bind, class Functor, class Monad, class Semigroup, Unit, bind, id, map, pure, unit, (#), ($), (<$>), (<*>), (<<<), (>>>))
+import Prelude (class Applicative, class Apply, class Bind, class Functor, class Monad, class Semigroup, id, map, pure, (#), ($), (<$>), (<*>), (<<<), (>>>))
 import RxJS.Notification (Notification(OnComplete, OnError, OnNext))
 import RxJS.Scheduler (Scheduler)
 import RxJS.Subscriber (Subscriber)
@@ -360,21 +360,8 @@ mapInner :: forall a b f. Functor f => (ObservableImpl a -> ObservableImpl b) ->
 mapInner f (ObservableT fo) = ObservableT (map f fo)
 
 
-flattenHelper :: forall a e m. Monad m => ObservableImpl (ObservableT m a) -> Subscriber a -> Eff e Subscription
-flattenHelper oeoa subscriber =
-  oeoa # subscribeNext_ (\(ObservableT inner) -> subscribeToResult inner subscriber)
-
-subscribeToResult :: forall a e m. Monad m => m (ObservableImpl a) -> Subscriber a -> Eff e Unit
-subscribeToResult inner subscriber =
-  let something = do
-        innerObservable <- inner
-        let eff = innerObservable # subscribeNext_ (\value -> subscriber.next value)
-        pure (unsafePerformEff eff)
-  in pure unit
-
 
 -- Public api:
-
 
 
 -- | An Observable of projected values from the most recent values from each input Observable.
@@ -400,17 +387,6 @@ fromObservable o = ObservableT (pure o)
 liftF :: forall a f. Applicative f => f a -> ObservableT f a
 liftF f = ObservableT (map pure f)
 
-
-_mergeAll :: forall a m. Monad m => ObservableT m (ObservableT m a) -> ObservableT m a
-_mergeAll (ObservableT outer) =
-  let observable = create_ (\subscriber -> do
-        let subscription =
-              map (\inner -> unsafePerformEff (flattenHelper inner subscriber)) outer
-        pure unit)
-  in ObservableT (pure (unsafePerformEff observable))
-
-
---join_ :: forall a m. Monad m => ObservableT m (ObservableT m a) -> ObservableT m a
 
 
 -- | Creates an ObservableImpl that immediately sends an error notification.
