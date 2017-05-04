@@ -2,8 +2,7 @@
 "use strict";
 
 // module RxJS.Observable
-
-var Rx = require('rxjs');
+var Rx = require('rxjs/Rx');
 
 
 function removeEff(fn) {
@@ -14,20 +13,20 @@ function removeEff(fn) {
 
 /**** Scheduling ****/
 
-exports.observeOn = function(s){
+exports.observeOn_ = function(s){
   return function(obs){
     return obs.observeOn(s);
   };
 }
 
-exports.subscribeOn = function(s){
+exports.subscribeOn_ = function(s){
   return function(obs){
     return obs.subscribeOn(s);
   };
 }
 
 /**** Subscription ****/
-exports.subscribe = function(sub){
+exports.subscribe_ = function(sub){
   return function(obs) {
     return function(){
       return obs.subscribe(
@@ -39,11 +38,11 @@ exports.subscribe = function(sub){
   };
 }
 
-exports.subscribeNext = function (eff){
+exports.subscribeNext_ = function(eff){
   return function(obs){
     return function(){
-      obs.subscribe(
-        function(val){return eff(val)();}
+      return obs.subscribe(
+        function(val){ eff(val)() }
       );
     };
   };
@@ -52,7 +51,7 @@ exports.subscribeNext = function (eff){
 
 /**** Creation Operators ****/
 
-exports.ajax = function(req) {
+exports.ajax_ = function(req) {
   return function() {
     return Rx.Observable.ajax(req)
       .map(function(res){
@@ -62,35 +61,35 @@ exports.ajax = function(req) {
   }
 }
 
-exports.ajaxWithBody = exports.ajax;
+exports.ajaxWithBody_ = exports.ajax;
 
-exports._empty = Rx.Observable.empty();
+exports._empty_ = Rx.Observable.empty();
 
-exports.fromArray = Rx.Observable.from;
+exports.fromArray_ = Rx.Observable.from;
 
-exports.fromEventImpl = Rx.Observable.fromEvent;
+exports.fromEventImpl_ = Rx.Observable.fromEvent;
 
-exports.interval = Rx.Observable.interval;
+exports.interval_ = Rx.Observable.interval;
 
-exports.just = Rx.Observable.of;
+exports.just_ = Rx.Observable.of;
 
-exports.never = Rx.Observable.never();
+exports.never_ = Rx.Observable.never();
 
-exports.rangeImpl = Rx.Observable.range;
+exports.rangeImpl_ = Rx.Observable.range;
 
-exports.throw = Rx.Observable.throw;
+exports.throw_ = Rx.Observable.throw;
 
-exports.timerImpl = Rx.Observable.timer;
+exports.timerImpl_ = Rx.Observable.timer;
 
 /**** Transformation Operators ****/
 
-exports.buffer = function(obs1){
+exports.buffer_ = function(obs1){
   return function(obs2){
     return obs1.buffer(obs2);
   };
 }
 
-exports.bufferCount = function(maxSize){
+exports.bufferCount_ = function(maxSize){
   return function(startNewAt){
     return function(obs){
       return obs.bufferCount(maxSize, startNewAt);
@@ -98,94 +97,84 @@ exports.bufferCount = function(maxSize){
   };
 }
 
-exports.bufferTimeImpl = function(timespan, creationInterval, maxSize, obs){
+exports.bufferTimeImpl_ = function(timespan, creationInterval, maxSize, obs){
   return obs.bufferTime(timespan, creationInterval, maxSize);
 }
 
-exports.bufferToggleImpl = function(obs, openings, closingSelector){
+exports.bufferToggleImpl_ = function(obs, openings, closingSelector){
   return obs.bufferToggle(openings, closingSelector);
 }
 
-exports.bufferWhen = function(obs){
-  return function(closing){
+exports.bufferWhen_ = function(closing){
+  return function(obs){
     return obs.bufferWhen(closing);
   };
 }
 
-exports.concatMap = function(obs){
-  return function(f){
+exports.concatMap_ = function(f){
+  return function(obs){
     return obs.concatMap(f);
   };
 }
 
-exports.concatMapTo = function(obs1){
-  return function(obs2){
-    return function(f){
-      return obs1.concatMapTo(obs2, function(a, b){
-        return f(a)(b);
-      });
-    };
-  };
-}
-
-exports.exhaustMap = function(obs){
-  return function(f){
+exports.exhaustMap_ = function(f){
+  return function(obs){
     return obs.exhaustMap(f);
   };
 }
 
-exports.expand = function(obs){
-  return function(f){
+exports.expand_ = function(f){
+  return function(obs){
     return obs.expand(f);
   };
 }
 
-exports.share = function(obs){
+exports.share_ = function(obs){
   return obs.share()
 }
 
-exports.groupBy = function(f){
+exports.groupBy_ = function(f){
   return function(obs){
     return obs.groupBy(f);
   };
 }
 
-exports._map = function(f){
+exports._map_ = function(f){
   return function(obs){
     return obs.map(f);
   };
 }
 
-exports.mapTo = function(val){
+exports.mapTo_ = function(val){
   return function(obs1){
     return obs1.mapTo(val);
   };
 }
 
-exports.mergeMap = function(obs){
+exports.mergeMap_ = function(obs){
   return function(f){
     return obs.mergeMap(f);
   };
 }
 
 
-exports.mergeMapTo = function(obs1){
+exports.mergeMapTo_ = function(obs1){
   return function(obs2){
     return obs1.mergeMapTo(obs2);
   };
 }
 
-exports.pairwiseImpl = function(obs){
+exports.pairwiseImpl_ = function(obs){
   return obs.pairwise();
 }
 
-exports.partitionImpl = function(pred){
+exports.partitionImpl_ = function(pred){
   return function(obs){
     return obs.partition(pred);
   };
 }
 
-exports.scan = function scan(f) {
+exports.scan_ = function(f) {
   return function(seed) {
     return function(ob) {
       return ob.scan(function(acc, value) {
@@ -195,25 +184,25 @@ exports.scan = function scan(f) {
   };
 }
 
-exports.switchMap = function(obs){
-  return function(f){
+exports.switchMap_ = function(f){
+  return function(obs){
     return obs.switchMap(f);
   };
 }
 
-exports.switchMapTo = function(obs1){
-  return function(obs2){
+exports.switchMapTo_ = function(obs2){
+  return function(obs1){
     return obs1.switchMapTo(obs2);
   };
 }
 
-exports.window = function(obs1){
-  return function(obs2){
+exports.window_ = function(obs2){
+  return function(obs1){
     return obs1.window(obs2);
   };
 }
 
-exports.windowCount = function(maxSize){
+exports.windowCount_ = function(maxSize){
   return function(startNewAt){
     return function(obs){
       return obs.windowCount(maxSize, startNewAt);
@@ -221,7 +210,7 @@ exports.windowCount = function(maxSize){
   };
 }
 
-exports.windowTime = function(timeSpan){
+exports.windowTime_ = function(timeSpan){
   return function(startNewAt){
     return function(obs){
       return obs.windowTime(timeSpan, startNewAt);
@@ -229,133 +218,125 @@ exports.windowTime = function(timeSpan){
   };
 }
 
-exports.windowToggleImpl = function(obs, openings, closingSelector){
-  return obs.windowToggle(openings, closingSelector);
-}
 
-exports.windowWhen = function(obs){
-  return function(closing){
-    return obs.windowWhen(function() { return closing });
-  };
-}
 
 /**** Filtering Operators ****/
 
-exports.audit = function(obs){
-  return function(f){
+exports.audit_ = function(f){
+  return function(obs){
     return obs.audit(f);
   };
 }
 
-exports.auditTime = function(ms){
+exports.auditTime_ = function(ms){
   return function(obs){
     return obs.auditTime(ms);
   };
 }
 
-exports.debounce = function (ob) {
-  return function(f) {
+exports.debounce_ = function(f) {
+  return function(ob) {
     return ob.debounce(f);
   };
 }
 
-exports.debounceTime = function(ms) {
+exports.debounceTime_ = function(ms) {
   return function(obs){
     return obs.debounceTime(ms);
   };
 }
 
-exports.distinct = function (ob){
+exports.distinct_ = function(ob){
   return ob.distinct();
 }
 
-exports.distinctUntilChanged = function (ob){
+exports.distinctUntilChanged_ = function(ob){
   return ob.distinctUntilChanged();
 }
 
-exports.elementAt = function(i){
+exports.elementAt_ = function(i){
   return function(obs){
     return obs.elementAt(i);
   };
 }
 
-exports.filter = function (p){
+exports.filter_ = function(p){
   return function(ob){
     return ob.filter(p);
   };
 }
 
-exports.first = function(p){
+exports.first_ = function(p){
   return function(ob){
     return ob.first(p);
   };
 }
 
-exports.ignoreElements = function(obs){
+exports.ignoreElements_ = function(obs){
   return obs.ignoreElements();
 }
 
-exports.last = function(p){
+exports.last_ = function(p){
   return function(ob){
     return ob.last(p);
   };
 }
 
-exports.sample = function(obs1){
-  return function(obs2){
-    return obs2.sample(obs1);
+exports.sample_ = function(obs2){
+  return function(obs1){
+    return obs1.sample(obs2);
   };
 }
 
-exports.sampleTime = function(ms){
+exports.sampleTime_ = function(ms){
   return function(obs){
     return obs.sampleTime(ms);
   };
 }
 
-exports.skip = function(n){
+exports.skip_ = function(n){
   return function(obs){
     return obs.skip(n);
   };
 }
 
-exports.skipUntil = function(obs1){
-  return function(obs2){
-    return obs2.skipUntil(obs1);
+exports.skipUntil_ = function(obs2){
+  return function(obs1){
+    return obs1.skipUntil(obs2);
   };
 }
 
-exports.skipWhile = function (p){
+exports.skipWhile_ = function(p){
   return function(obs){
     return obs.skipWhile(p);
   };
 }
 
-exports.take = function (n) {
+exports.take_ = function(n) {
   return function(ob) {
     return ob.take(n);
   };
 }
 
-exports.takeUntil = function (other) {
+exports.takeUntil_ = function(other) {
   return function(ob) {
     return ob.takeUntil(other);
   };
 }
 
-exports.takeWhile = function (obs1){
-  return function(obs2){
-    return obs2.takeWhile(obs1);
+exports.takeWhile_ = function(obs2){
+  return function(obs1){
+    return obs1.takeWhile(obs2);
   };
 }
 
-exports.throttle = function(obs){
-  return function(f){
+exports.throttle_ = function(f){
+  return function(obs){
     return obs.throttle(f);
   };
 }
 
-exports.throttleTime = function(ms){
+exports.throttleTime_ = function(ms){
   return function(obs){
     return obs.throttleTime(ms);
   };
@@ -363,7 +344,7 @@ exports.throttleTime = function(ms){
 
 /**** Combination Operators ****/
 
-exports.combineLatest = function (f) {
+exports.combineLatest_ = function(f) {
   return function(ob1) {
     return function(ob2) {
       return ob1.combineLatest(ob2, function (x, y) {
@@ -373,7 +354,7 @@ exports.combineLatest = function (f) {
   };
 }
 
-exports.combineLatest3 = function(f){
+exports.combineLatest3_ = function(f){
   return function(obs1){
     return function(obs2){
       return function(obs3){
@@ -385,43 +366,43 @@ exports.combineLatest3 = function(f){
   };
 }
 
-exports.concat = function (obs1) {
+exports.concat_ = function(obs1) {
   return function(obs2) {
-    return obs1.concat(obs1);
+    return obs1.concat(obs2);
   };
 }
 
-exports.concatAll = function (obsobs){
+exports.concatAll_ = function(obsobs){
   return obsobs.concatAll();
 }
 
-exports.exhaust = function (obsobs){
+exports.exhaust_ = function(obsobs){
   return obsobs.exhaust();
 }
 
-exports.merge = function (ob) {
+exports.merge_ = function(ob) {
   return function(other) {
     return ob.merge(other);
   };
 }
 
-exports.mergeAll = function (obsobs){
+exports.mergeAll_ = function(obsobs){
   return obsobs.mergeAll();
 }
 
-exports.race = function(arrOfObs){
+exports.race_ = function(arrOfObs){
   return Rx.Observable.race.apply(this, arrOfObs);
 }
 
-exports.startWith = function (start) {
+exports.startWith_ = function(start) {
   return function(ob) {
     return ob.startWith(start);
   };
 }
 
-exports.withLatestFrom = function (f) {
-  return function (ob1) {
-    return function (ob2) {
+exports.withLatestFrom_ = function(f) {
+  return function (ob2) {
+    return function (ob1) {
       return ob1.withLatestFrom(ob2, function(x, y) {
         return f(x)(y);
       })
@@ -429,19 +410,19 @@ exports.withLatestFrom = function (f) {
   };
 }
 
-exports.zip = function(arrOfObs){
+exports.zip_ = function(arrOfObs){
   return Rx.Observable.zip.apply(this, arrOfObs);
 }
 
 /**** Error Handling Operators ****/
 
-exports.catch = function(obs){
+exports.catch_ = function(obs){
   return function(f){
     return obs.catch(f);
   };
 }
 
-exports.retry = function(nTimes){
+exports.retry_ = function(nTimes){
   return function(obs){
     return obs.retry(nTimes);
   };
@@ -450,19 +431,19 @@ exports.retry = function(nTimes){
 
 /**** Utility Operators ****/
 
-exports.delay = function (ms){
+exports.delay_ = function(ms){
   return function(ob){
     return ob.delay(ms);
   };
 }
 
-exports.delayWhen = function(obs1){
-  return function(f){
+exports.delayWhen_ = function(f){
+  return function(obs1){
     return obs1.delayWhen(f);
   };
 }
 
-exports._materialize = function (ob, Next, Error, Complete) {
+exports.materializeImpl = function(ob, Next, Error, Complete) {
   return ob.materialize().map(function(x) {
     switch (x.kind) {
       case 'N': return Next(x.value);
@@ -472,13 +453,35 @@ exports._materialize = function (ob, Next, Error, Complete) {
   });
 }
 
-exports.create = function(fn) {
+exports.create_ = function(subscriberToEff) {
   return function() {
-    return Rx.Observable.create(fn)
+    return Rx.Observable.create(subscriberToObserverFn(subscriberToEff))
   }
 }
 
-exports.dematerialize = function (ob) {
+function subscriberToObserverFn(subscriberFn){
+  return removeEff(function(observer){
+    var subscriber = observerToSubscriber(observer)
+    return subscriberFn(subscriber)
+  })
+}
+
+function observerToSubscriber(observer){
+  return {
+    next: function(a){
+      return function(){observer.next(a)}
+    },
+    error: function(e){
+      return function(){observer.error(e)}
+    },
+    completed: function(){
+      return function(){observer.completed()}
+    }
+
+  }
+}
+
+exports.dematerialize_ = function(ob) {
   return ob.map(function(a) {
     switch (a.constructor.name) {
       case "OnNext": return Rx.Notification.createNext(a.value0);
@@ -488,46 +491,37 @@ exports.dematerialize = function (ob) {
   }).dematerialize();
 }
 
-exports.performEach = function(obs){
-  return function(f){
-    return function(){
-      return obs.do(function(val){
-        f(val)();
-      });
-    };
-  };
-}
 
-exports.toArray = function(obs){
+exports.toArray_ = function(obs){
   return obs.toArray();
 }
 
 /**** Conditional and Boolean Operators ****/
 
-exports.defaultIfEmpty = function(val){
+exports.defaultIfEmpty_ = function(val){
   return function(obs){
     return obs.defaultIfEmpty(val);
   };
 }
 
-exports.every = function(pred){
+exports.every_ = function(pred){
   return function(obs){
     return obs.every(pred);
   };
 }
 
-exports.isEmpty = function(obs){
+exports.isEmpty_ = function(obs){
   return obs.isEmpty();
 }
 
 /**** Aggregate Operators ****/
 
-exports.count = function(obs){
+exports.count_ = function(obs){
   return obs.count();
 }
 
 
-exports.reduce = function (f){
+exports.reduce_ = function(f){
   return function(seed){
     return function(ob){
       return ob.reduce(function (x, y) {
@@ -540,7 +534,7 @@ exports.reduce = function (f){
 
 /**** Helpers ****/
 
-exports.unwrap = function (obs) {
+exports.unwrap_ = function(obs) {
   return function() {
     return obs.map(function(eff) {
       return eff();

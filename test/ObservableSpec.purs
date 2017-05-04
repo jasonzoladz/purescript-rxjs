@@ -1,20 +1,40 @@
-module ObservableSpec where
+module ObservableSpec (observableOperatorSpec, observableCreationSpec) where
 
 import RxJS.Observable
+import Control.Comonad (extract)
 import Control.Monad.Aff.AVar (AVAR)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (CONSOLE)
+import Control.MonadPlus (empty)
 import Data.String (length)
 import Prelude (Unit, bind, const, map, pure, unit, (#), (<), (>), discard)
 import Test.Unit (TestSuite, suite, test)
 import Test.Unit.Console (TESTOUTPUT)
 
-observableSpec :: forall e. TestSuite (console :: CONSOLE, testOutput :: TESTOUTPUT, avar :: AVAR, rx :: RX | e)
-observableSpec =
+observableCreationSpec :: forall e. TestSuite (console :: CONSOLE, testOutput :: TESTOUTPUT, avar :: AVAR | e)
+observableCreationSpec =
+  suite "observable creation methods" do
+    test "interval" do
+      liftEff ((interval 200 # take 2) # subObservable)
+    test "timer" do
+      liftEff ((timer 200 100 # take 2) # subObservable)
+    test "never" do
+      liftEff ((never) # subObservable)
+    test "empty" do
+      liftEff ((empty) # subObservable)
+    test "range" do
+      liftEff ((range 0 5) # subObservable)
+    test "fromArray" do
+      liftEff ((fromArray [1,2,3,4,5]) # subObservable)
+    test "just" do
+      liftEff ((just "Hello World!") # subObservable)
+
+observableOperatorSpec :: forall e. TestSuite (console :: CONSOLE, testOutput :: TESTOUTPUT, avar :: AVAR | e)
+observableOperatorSpec =
   suite "observable operators" do
     test "audit" do
-      liftEff ((audit observable (\x -> observable3)) # subObservable)
+      liftEff ((audit (\x -> observable3) observable) # subObservable)
     test "auditTime" do
       liftEff ((auditTime 200 observable) # subObservable)
     test "bufferCount" do
@@ -26,19 +46,19 @@ observableSpec =
     test "concatAll" do
       liftEff ((concatAll higherOrder) # subObservable)
     test "concatMap" do
-      liftEff ((concatMap observable (\n -> just n)) # subObservable)
+      liftEff ((concatMap (\n -> just n) observable) # subObservable)
     test "count" do
       liftEff ((count observable) # subObservable)
     test "debounce" do
-      liftEff ((debounce observable3 (\x -> observable)) # subObservable)
+      liftEff ((debounce (\x -> observable) observable3) # subObservable)
     test "debounceTime" do
       liftEff ((debounceTime 1000 observable) # subObservable)
     test "defaultIfEmpty" do
-      liftEff ((defaultIfEmpty observable 0) # subObservable)
+      liftEff ((defaultIfEmpty 0 observable) # subObservable)
     test "delay" do
       liftEff ((delay 200 observable) # subObservable)
     test "delayWhen" do
-      liftEff ((delayWhen observable (\x -> observable2)) # subObservable)
+      liftEff ((delayWhen (\x -> observable2) observable) # subObservable)
     test "distinct" do
       liftEff ((distinct observable) # subObservable)
     test "distinctUntilChanged" do
@@ -46,11 +66,11 @@ observableSpec =
     test "exhaust" do
       liftEff ((exhaust higherOrder) # subObservable)
     test "exhaustMap" do
-      liftEff ((exhaustMap observable (\x -> observable3)) # subObservable)
+      liftEff ((exhaustMap (\x -> observable3) observable) # subObservable)
     test "elementAt" do
-      liftEff ((elementAt observable 2) # subObservable)
+      liftEff ((elementAt 2 observable) # subObservable)
     test "every" do
-      liftEff ((every observable (_ > 3) # subObservable))
+      liftEff ((every (_ > 3) observable # subObservable))
     test "filter" do
       liftEff ((filter (_ > 2) observable) # subObservable)
     test "groupBy" do
@@ -60,9 +80,9 @@ observableSpec =
     test "isEmpty" do
       liftEff ((isEmpty observable) # subObservable)
     test "first" do
-      liftEff ((first observable (const true) # subObservable))
+      liftEff ((first (const true) observable # subObservable))
     test "last" do
-      liftEff ((last observable (const true) # subObservable))
+      liftEff ((last (const true) observable # subObservable))
     test "map" do
       liftEff ((map length observable2) # subObservable)
     test "mapTo" do
@@ -98,7 +118,7 @@ observableSpec =
     test "startWith" do
       liftEff ((startWith 0 observable) # subObservable)
     test "switchMap" do
-      liftEff ((switchMap observable (\x -> observable2)) # subObservable)
+      liftEff ((switchMap (\x -> observable2) observable) # subObservable)
     test "switchMapTo" do
       liftEff ((switchMapTo observable2 observable) # subObservable)
     test "take" do
@@ -108,7 +128,7 @@ observableSpec =
     test "takeUntil" do
       liftEff ((takeUntil observable observable3) # subObservable)
     test "throttle" do
-      liftEff ((throttle observable (\x -> observable3)) # subObservable)
+      liftEff ((throttle (\x -> observable3) observable) # subObservable)
     test "throttleTime" do
       liftEff ((throttleTime 200 observable) # subObservable)
     test "window" do
@@ -117,10 +137,6 @@ observableSpec =
       liftEff ((windowCount 1 1 observable) # subObservable)
     test "windowTime" do
       liftEff ((windowTime 100 100 observable) # subObservable)
-    test "windowWhen" do
-      liftEff ((windowWhen observable3 observable) # subObservable)
-    test "windowToggle" do
-      liftEff ((windowToggle observable observable2 (\x -> observable3)) # subObservable)
     test "withLatestFrom" do
       liftEff ((withLatestFrom (\a b -> a) observable observable2) # subObservable)
     test "zip" do
@@ -133,14 +149,14 @@ observable2 :: Observable String
 observable2 = fromArray ["h","e","ll","o"]
 
 observable3 :: Observable Int
-observable3 = fromArray [6,5,4,3,2,1]
+observable3 = fromArray [7]
 
 higherOrder :: Observable (Observable String)
 higherOrder = just observable2
 
-subObservable :: forall a e. Observable a -> Eff (rx :: RX | e) Unit
+subObservable :: forall a e. Observable a -> Eff e Unit
 subObservable obs = do
-    sub <- obs # subscribeNext noop
+    sub <- extract (obs # subscribeNext noop)
     pure unit
 
 noop :: forall a e. a -> Eff e Unit

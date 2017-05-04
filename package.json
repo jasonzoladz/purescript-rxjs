@@ -1,5 +1,5 @@
 {
-  "name": "purescript-rxjs",
+  "name": "purescript-rx-observable",
   "version": "0.1.0",
   "description": "An un-opinionated wrapper around Reactive Extensions for JavaScript (v5.*).",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node node_modules/.bin/webpack-dev-server --inline --hot" ,
-    "test" : "pulp browserify -I test -m Test.Main -t index.js && phantomjs index.js"
+    "test" : "pulp browserify -I test -m Test.Main -t index.js && node index.js"
   },
   "repository": {
     "type": "git",
@@ -17,19 +17,17 @@
   "keywords": [
     "purescript-rxjs"
   ],
-  "author": "Jason M. Zoladz",
-  "license": "MIT",
+  "author": "Luka Jacobowitz",
+  "license": "Apache 2.0",
   "bugs": {
     "url": "https://github.com/jasonzoladz/purescript-rxjs/issues"
   },
   "homepage": "https://github.com/jasonzoladz/purescript-rxjs#readme",
   "devDependencies": {
-    "purs-loader": "^2.1.1",
-    "webpack": "^1.14.0",
-    "webpack-dev-server": "^1.16.2"
+    "purescript": "0.11.4",
+    "pulp": "11.0.0"
   },
   "dependencies": {
-    "jquery": "^3.1.1",
-    "rxjs": "^5.2.0"
+    "rxjs": "^5.3.1"
   }
 }
