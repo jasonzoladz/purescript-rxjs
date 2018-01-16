@@ -471,11 +471,7 @@ exports.performEach = function(obs){
   };
 }
 
-exports.scheduleOn = function(obs){
-  return function(scheduler){
-    return obs.scheduleOn(scheduler);
-  };
-}
+
 exports.toArray = function(obs){
   return obs.toArray();
 }

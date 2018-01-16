@@ -445,6 +445,32 @@ foreign import performEach :: forall a e. ReplaySubject a -> (a -> Eff (|e) Unit
 
 foreign import toArray :: forall a. ReplaySubject a -> ReplaySubject (Array a)
 
+-- | Returns a ReplaySubject that emits the items emitted by the source ReplaySubject or a specified default item
+-- | if the source ReplaySubject is empty.
+-- |
+-- | ![marble diagram](http://reactivex.io/documentation/operators/images/defaultIfEmpty.c.png)
+-- |
+-- | takes a defaultValue which is the item to emit if the source ReplaySubject emits no items.
+-- |
+-- | returns a ReplaySubject that emits either the specified default item if the source ReplaySubject emits no
+-- |         items, or the items emitted by the source ReplaySubject
+foreign import defaultIfEmpty :: forall a. ReplaySubject a -> a -> ReplaySubject a
+
+-- | Determines whether all elements of a ReplaySubject satisfy a condition.
+-- | Returns a ReplaySubject containing a single element determining whether all
+-- | elements in the source ReplaySubject pass the test in the specified predicate.
+foreign import every :: forall a. ReplaySubject a -> (a -> Boolean) -> ReplaySubject Boolean
+
+-- | Tests whether this `ReplaySubject` emits no elements.
+-- |
+-- | returns a ReplaySubject emitting one single Boolean, which is `true` if this `ReplaySubject`
+-- |         emits no elements, and `false` otherwise.
+foreign import isEmpty :: forall a. ReplaySubject a -> ReplaySubject Boolean
+
+-- | Returns a ReplaySubject that emits only the first item emitted by the source
+-- | ReplaySubject that satisfies the given predicate.
+foreign import first :: forall a. ReplaySubject a -> (a -> Boolean) -> ReplaySubject a
+
 -- Aggregate Operators
 
 -- | Counts the number of emissions on the source and emits that number when the source completes.

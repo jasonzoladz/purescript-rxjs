@@ -432,6 +432,33 @@ foreign import performEach :: forall a e. BehaviorSubject a -> (a -> Eff (|e) Un
 
 foreign import toArray :: forall a. BehaviorSubject a -> BehaviorSubject (Array a)
 
+-- | Returns a BehaviorSubject that emits the items emitted by the source BehaviorSubject or a specified default item
+-- | if the source BehaviorSubject is empty.
+-- |
+-- | ![marble diagram](http://reactivex.io/documentation/operators/images/defaultIfEmpty.c.png)
+-- |
+-- | takes a defaultValue which is the item to emit if the source BehaviorSubject emits no items.
+-- |
+-- | returns a BehaviorSubject that emits either the specified default item if the source BehaviorSubject emits no
+-- |         items, or the items emitted by the source BehaviorSubject
+foreign import defaultIfEmpty :: forall a. BehaviorSubject a -> a -> BehaviorSubject a
+
+-- | Determines whether all elements of a BehaviorSubject satisfy a condition.
+-- | Returns a BehaviorSubject containing a single element determining whether all
+-- | elements in the source BehaviorSubject pass the test in the specified predicate.
+foreign import every :: forall a. BehaviorSubject a -> (a -> Boolean) -> BehaviorSubject Boolean
+
+-- | Tests whether this `BehaviorSubject` emits no elements.
+-- |
+-- | returns a BehaviorSubject emitting one single Boolean, which is `true` if this `BehaviorSubject`
+-- |         emits no elements, and `false` otherwise.
+foreign import isEmpty :: forall a. BehaviorSubject a -> BehaviorSubject Boolean
+
+-- | Returns a BehaviorSubject that emits only the first item emitted by the source
+-- | BehaviorSubject that satisfies the given predicate.
+foreign import first :: forall a. BehaviorSubject a -> (a -> Boolean) -> BehaviorSubject a
+
+
 -- Aggregate Operators
 
 -- | Counts the number of emissions on the source and emits that number when the source completes.

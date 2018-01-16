@@ -108,8 +108,6 @@ import RxJS.Notification (Notification(OnComplete, OnError, OnNext))
 import RxJS.Scheduler (Scheduler)
 import RxJS.Subscriber (Subscriber)
 import RxJS.Subscription (Subscription)
-import Test.QuickCheck (class Arbitrary, arbitrary)
-import Test.QuickCheck.Gen (arrayOf)
 
 -- | *Note*: A couple operators are not wrapped (namely, `bindCallback`, `bindNodeCallback`) because RxJS
 -- | implementation details prevent giving the operators an "honest" PureScript type.
@@ -157,9 +155,6 @@ instance monadErrorObservable :: MonadError Error Observable where
 
 instance monadThrowObservable :: MonadThrow Error Observable where
   throwError = throw
-
-instance arbitraryObservable :: Arbitrary a => Arbitrary (Observable a) where
-  arbitrary = fromArray <$> (arrayOf arbitrary)
 
 -- | Makes every `next` call run in the new Scheduler.
 foreign import observeOn :: forall a. Scheduler -> Observable a -> Observable a
@@ -616,8 +611,6 @@ foreign import toArray :: forall a. Observable a -> Observable (Array a)
 -- | returns an Observable that emits either the specified default item if the source Observable emits no
 -- |         items, or the items emitted by the source Observable
 foreign import defaultIfEmpty :: forall a. Observable a -> a -> Observable a
-
-
 
 -- | Determines whether all elements of an observable sequence satisfy a condition.
 -- | Returns an observable sequence containing a single element determining whether all

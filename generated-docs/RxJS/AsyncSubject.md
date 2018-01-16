@@ -134,6 +134,16 @@ concatMapTo :: forall a b c. AsyncSubject a -> AsyncSubject b -> (a -> b -> Asyn
 
 The type signature explains it best.  Warning: Like `concatMap`, composition is sequential.
 
+#### `every`
+
+``` purescript
+every :: forall a. AsyncSubject a -> (a -> Boolean) -> AsyncSubject Boolean
+```
+
+Determines whether all elements of an AsyncSubject satisfy a condition.
+Returns an AsyncSubject containing a single element determining whether all
+elements in the source AsyncSubject pass the test in the specified predicate.
+
 #### `exhaustMap`
 
 ``` purescript

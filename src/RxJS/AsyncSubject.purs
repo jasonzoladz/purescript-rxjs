@@ -12,6 +12,7 @@ module RxJS.AsyncSubject
   , bufferWhen
   , concatMap
   , concatMapTo
+  , every
   , exhaustMap
   , expand
   , groupBy
@@ -434,6 +435,32 @@ materialize ob = runFn4 _materialize ob OnNext OnError OnComplete
 foreign import performEach :: forall a e. AsyncSubject a -> (a -> Eff (|e) Unit) -> Eff (|e) (AsyncSubject a)
 
 foreign import toArray :: forall a. AsyncSubject a -> AsyncSubject (Array a)
+
+-- | Returns an AsyncSubject that emits the items emitted by the source AsyncSubject or a specified default item
+-- | if the source AsyncSubject is empty.
+-- |
+-- | ![marble diagram](http://reactivex.io/documentation/operators/images/defaultIfEmpty.c.png)
+-- |
+-- | takes a defaultValue which is the item to emit if the source AsyncSubject emits no items.
+-- |
+-- | returns an AsyncSubject that emits either the specified default item if the source AsyncSubject emits no
+-- |         items, or the items emitted by the source AsyncSubject
+foreign import defaultIfEmpty :: forall a. AsyncSubject a -> a -> AsyncSubject a
+
+-- | Determines whether all elements of an AsyncSubject satisfy a condition.
+-- | Returns an AsyncSubject containing a single element determining whether all
+-- | elements in the source AsyncSubject pass the test in the specified predicate.
+foreign import every :: forall a. AsyncSubject a -> (a -> Boolean) -> AsyncSubject Boolean
+
+-- | Tests whether this `AsyncSubject` emits no elements.
+-- |
+-- | returns an AsyncSubject emitting one single Boolean, which is `true` if this `AsyncSubject`
+-- |         emits no elements, and `false` otherwise.
+foreign import isEmpty :: forall a. AsyncSubject a -> AsyncSubject Boolean
+
+-- | Returns an AsyncSubject that emits only the first item emitted by the source
+-- | AsyncSubject that satisfies the given predicate.
+foreign import first :: forall a. AsyncSubject a -> (a -> Boolean) -> AsyncSubject a
 
 -- Aggregate Operators
 
