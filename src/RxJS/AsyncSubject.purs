@@ -86,7 +86,7 @@ import RxJS.Observable (Observable)
 import RxJS.Subscriber (Subscriber)
 import RxJS.Subscription (Subscription)
 
--- | Please see [RxJS Version 6.* documentation](http://reactivex.io/rxjs/) for
+-- | Please see [RxJS Version 5.* documentation](http://reactivex.io/rxjs/) for
 -- | additional details on proper usage of the library.
 
 

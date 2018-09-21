@@ -113,7 +113,7 @@ import Web.Event.Internal.Types (Event, EventTarget)
 -- | *Note*: A couple operators are not wrapped (namely, `bindCallback`, `bindNodeCallback`) because RxJS
 -- | implementation details prevent giving the operators an "honest" PureScript type.
 -- | However, such operators are replaced easily using `Aff` with the `AsyncSubject` module.
--- | Please see [RxJS Version 6.* documentation](http://reactivex.io/rxjs/) for
+-- | Please see [RxJS Version 5.* documentation](http://reactivex.io/rxjs/) for
 -- | additional details on proper usage of the library.
 
 foreign import data Observable :: Type -> Type
@@ -402,7 +402,7 @@ foreign import windowToggleImpl
   :: forall a b c. Fn3 (Observable a) (Observable b) (b -> Observable c) (Observable (Array a))
 
 -- | It's like bufferWhen, but emits a nested Observable instead of an array.
-foreign import windowWhen :: forall a b. Observable a -> Observable b -> Observable (Observable a)
+foreign import windowWhen :: forall a b. (Unit -> Observable b) -> Observable a -> Observable (Observable a)
 
 -- Filtering Operators
 -- | It's like auditTime, but the silencing duration is determined by a second Observable.

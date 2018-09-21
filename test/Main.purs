@@ -6,7 +6,7 @@ import Control.MonadPlus (empty)
 import Data.String (length)
 import Effect (Effect)
 import Effect.Class (liftEffect)
-import Prelude (Unit, bind, const, map, pure, unit, (#), (+), (<), (>), discard)
+import Prelude (Unit, bind, const, discard, identity, map, pure, unit, (#), (+), (<), (>),(>>=))
 import Test.Unit (suite, test)
 import Test.Unit.Main (exit, runTest)
 
@@ -126,7 +126,7 @@ main = do
       test "takeUntil" do
         liftEffect ((takeUntil observable observable3) # subObservable)
       test "throttle" do
-        liftEffect ((throttle observable (\x -> observable3)) # subObservable)
+        liftEffect ((throttle observable (\_ -> interval 100)) # subObservable)
       test "throttleTime" do
         liftEffect ((throttleTime 200 observable) # subObservable)
       test "window" do
@@ -134,9 +134,11 @@ main = do
       test "windowCount" do
         liftEffect ((windowCount 1 1 observable) # subObservable)
       test "windowTime" do
-        liftEffect ((windowTime 100 100 observable) # subObservable)
+        liftEffect ((windowTime 100 100 observable) #subObservable)
       test "windowWhen" do
-        liftEffect ((windowWhen observable3 observable) # subObservable)
+        -- | For some bizarre call stack size exceed error I changed the window observable to be an interval
+        -- | It's worth noting that this error was reproducable on vanilla js & on rxjs ^5.5.0
+        liftEffect (observable # windowWhen (\_ -> interval 100) # subObservable) 
       test "windowToggle" do
         liftEffect ((windowToggle observable observable2 (\x -> observable3)) # subObservable)
       test "withLatestFrom" do
@@ -160,8 +162,6 @@ higherOrder = just observable2
 
 subObservable :: forall a. Observable a -> Effect Unit
 subObservable obs = do
-    sub <- obs # subscribeNext noop
-    pure unit
-
-noop :: forall a. a -> Effect Unit
-noop a = pure unit
+  _ <- subscribeNext (\_ -> nothing) obs
+  nothing where 
+    nothing = pure unit
