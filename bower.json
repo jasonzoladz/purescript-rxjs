@@ -7,21 +7,22 @@
     "output"
   ],
   "dependencies": {
-    "purescript-prelude": "^3.0.0",
-    "purescript-console": "^3.0.0",
-    "purescript-functions": "^3.0.0",
-    "purescript-exceptions": "^3.0.0",
-    "purescript-aff": "^3.0.0",
-    "purescript-arrays": "^4.0.0",
-    "purescript-st": "^3.0.0",
-    "purescript-dom": "^4.1.0",
-    "purescript-maps" : "^3.0.0"
+    "purescript-prelude": "^4.1.0",
+    "purescript-console": "^4.1.0",
+    "purescript-functions": "^4.0.0",
+    "purescript-exceptions": "^4.0.0",
+    "purescript-aff": "^5.0.0",
+    "purescript-arrays": "^5.0.0",
+    "purescript-st": "^4.0.0",
+    "purescript-web-html": "^1.0.0",
+    "purescript-web-uievents": "^1.0.0",
+    "purescript-ordered-collections": "^1.1.0"
   },
   "devDependencies": {
-    "purescript-psci-support": "^3.0.0",
-    "purescript-debug": "^3.0.0",
-    "purescript-test-unit": "^11.0.0",
-    "purescript-quickcheck": "^4.0.0"
+    "purescript-psci-support": "^4.0.0",
+    "purescript-debug": "^4.0.0",
+    "purescript-test-unit": "^14.0.0",
+    "purescript-quickcheck": "^5.0.0"
   },
   "license": "MIT",
   "repository": {

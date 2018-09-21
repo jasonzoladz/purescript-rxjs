@@ -71,21 +71,22 @@ module RxJS.AsyncSubject
   ) where
 
 import RxJS.Scheduler
+
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Exception (Error)
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
 import Data.Function.Uncurried (Fn3, Fn4, runFn3, runFn4)
-import Prelude (class Semigroup, class Monad, class Bind, class Applicative, class Apply, class Functor, Unit, id, unit)
+import Effect (Effect)
+import Effect.Exception (Error)
+import Prelude (class Applicative, class Apply, class Bind, class Functor, class Monad, class Semigroup, Unit, identity, unit)
 import RxJS.Notification (Notification(OnComplete, OnError, OnNext))
 import RxJS.Observable (Observable)
 import RxJS.Subscriber (Subscriber)
 import RxJS.Subscription (Subscription)
 
--- | Please see [RxJS Version 5.* documentation](http://reactivex.io/rxjs/) for
+-- | Please see [RxJS Version 6.* documentation](http://reactivex.io/rxjs/) for
 -- | additional details on proper usage of the library.
 
 
@@ -95,7 +96,7 @@ instance functorAsyncSubject :: Functor AsyncSubject where
   map = _map
 
 instance applyAsyncSubject :: Apply AsyncSubject where
-  apply = combineLatest id
+  apply = combineLatest identity
 
 instance applicativeAsyncSubject :: Applicative AsyncSubject where
   pure = just
@@ -133,15 +134,15 @@ foreign import subscribeOn :: forall a. Scheduler -> AsyncSubject a -> AsyncSubj
 
 -- | Subscribing to an AsyncSubject is like calling a function, providing
 -- | `next`, `error` and `completed` effects to which the data will be delivered.
-foreign import subscribe :: forall a e. Subscriber a -> AsyncSubject a ->  Eff (|e) Subscription
+foreign import subscribe :: forall a. Subscriber a -> AsyncSubject a ->  Effect Subscription
 
-foreign import subscribeObservableTo :: forall a e. Observable a -> AsyncSubject a -> Eff (|e) Subscription
+foreign import subscribeObservableTo :: forall a. Observable a -> AsyncSubject a -> Effect Subscription
 
 -- Subscribe to an AsyncSubject, supplying only the `next` function.
 foreign import subscribeNext
-  :: forall a e. (a -> Eff (|e) Unit)
+  :: forall a. (a -> Effect Unit)
   -> AsyncSubject a
-  -> Eff (|e) Subscription
+  -> Effect Subscription
 
 
 -- Creation Operators
@@ -432,7 +433,7 @@ materialize ob = runFn4 _materialize ob OnNext OnError OnComplete
 -- | Performs the effect on each value of the AsyncSubject.  An alias for `do`.
 -- | Useful for testing (transparently performing an effect outside of a subscription).
 
-foreign import performEach :: forall a e. AsyncSubject a -> (a -> Eff (|e) Unit) -> Eff (|e) (AsyncSubject a)
+foreign import performEach :: forall a. AsyncSubject a -> (a -> Effect Unit) -> Effect (AsyncSubject a)
 
 foreign import toArray :: forall a. AsyncSubject a -> AsyncSubject (Array a)
 
@@ -474,4 +475,4 @@ foreign import reduce :: forall a b. (a -> b -> b) -> b -> AsyncSubject a -> Asy
 -- Helper Functions
 
   -- | Run a source's effects
-foreign import unwrap :: forall a e. AsyncSubject (Eff e a) -> Eff e (AsyncSubject a)
+foreign import unwrap :: forall a. AsyncSubject (Effect a) -> Effect (AsyncSubject a)

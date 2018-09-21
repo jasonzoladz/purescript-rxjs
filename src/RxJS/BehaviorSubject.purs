@@ -72,18 +72,18 @@ module RxJS.BehaviorSubject
   , count
   ) where
 
-import RxJS.Scheduler (Scheduler)
 import Control.Alt (class Alt)
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Exception (Error)
 import Data.Function.Uncurried (Fn3, Fn4, runFn3, runFn4)
-import Prelude (class Semigroup, class Monad, class Bind, class Applicative, class Apply, class Functor, Unit, id)
+import Effect (Effect)
+import Effect.Exception (Error)
+import Prelude (class Applicative, class Apply, class Bind, class Functor, class Monad, class Semigroup, Unit, identity)
 import RxJS.Notification (Notification(OnComplete, OnError, OnNext))
 import RxJS.Observable (Observable)
+import RxJS.Scheduler (Scheduler)
 import RxJS.Subscriber (Subscriber)
 import RxJS.Subscription (Subscription)
 
--- | Please see [RxJS Version 5.* documentation](http://reactivex.io/rxjs/) for
+-- | Please see [RxJS Version 6.* documentation](http://reactivex.io/rxjs/) for
 -- | additional details on proper usage of the library.
 
 foreign import data BehaviorSubject :: Type -> Type
@@ -92,7 +92,7 @@ instance functorBehaviorSubject :: Functor BehaviorSubject where
   map = _map
 
 instance applyBehaviorSubject :: Apply BehaviorSubject where
-  apply = combineLatest id
+  apply = combineLatest identity
 
 instance applicativeBehaviorSubject :: Applicative BehaviorSubject where
   pure = just
@@ -122,15 +122,15 @@ foreign import subscribeOn :: forall a. Scheduler -> BehaviorSubject a -> Behavi
 
 -- | Subscribing to an BehaviorSubject is like calling a function, providing
 -- | `next`, `error` and `completed` effects to which the data will be delivered.
-foreign import subscribe :: forall a e. Subscriber a -> BehaviorSubject a ->  Eff (|e) Subscription
+foreign import subscribe :: forall a. Subscriber a -> BehaviorSubject a ->  Effect Subscription
 
-foreign import subscribeObservableTo :: forall a e. Observable a -> BehaviorSubject a -> Eff (|e) Subscription
+foreign import subscribeObservableTo :: forall a. Observable a -> BehaviorSubject a -> Effect Subscription
 
 -- Subscribe to an BehaviorSubject, supplying only the `next` function.
 foreign import subscribeNext
-  :: forall a e. (a -> Eff (|e) Unit)
+  :: forall a. (a -> Effect Unit)
   -> BehaviorSubject a
-  -> Eff (|e) Subscription
+  -> Effect Subscription
 
 
 -- Creation Operator
@@ -142,17 +142,17 @@ foreign import just :: forall a. a -> BehaviorSubject a
 -- BehaviorSubject Operators
 
 -- | Send a new value to a BehaviorSubject
-foreign import next :: forall a e. a -> BehaviorSubject a -> Eff e Unit
+foreign import next :: forall a. a -> BehaviorSubject a -> Effect Unit
 
 -- | An alias for next
-send :: forall a e. a -> BehaviorSubject a -> Eff e Unit
+send :: forall a. a -> BehaviorSubject a -> Effect Unit
 send = next
 
 -- | Create an Observable from a BehaviorSubject
 foreign import asObservable :: forall a. BehaviorSubject a -> Observable a
 
 -- | Obtain the current value of a BehaviorSubject
-foreign import getValue :: forall a e. BehaviorSubject a -> Eff e a
+foreign import getValue :: forall a. BehaviorSubject a -> Effect a
 
 -- Transformation Operators
 
@@ -428,7 +428,7 @@ materialize ob = runFn4 _materialize ob OnNext OnError OnComplete
 -- | Performs the effect on each value of the BehaviorSubject.  An alias for `do`.
 -- | Useful for testing (transparently performing an effect outside of a subscription).
 
-foreign import performEach :: forall a e. BehaviorSubject a -> (a -> Eff (|e) Unit) -> Eff (|e) (BehaviorSubject a)
+foreign import performEach :: forall a. BehaviorSubject a -> (a -> Effect Unit) -> Effect (BehaviorSubject a)
 
 foreign import toArray :: forall a. BehaviorSubject a -> BehaviorSubject (Array a)
 
@@ -471,4 +471,4 @@ foreign import reduce :: forall a b. (a -> b -> b) -> b -> BehaviorSubject a -> 
 -- Helper Functions
 
   -- | Run a source's effects
-foreign import unwrap :: forall a e. BehaviorSubject (Eff e a) -> Eff e (BehaviorSubject a)
+foreign import unwrap :: forall a. BehaviorSubject (Effect a) -> Effect (BehaviorSubject a)

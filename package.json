@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "start": "node node_modules/.bin/webpack-dev-server --inline --hot" 
+    "start": "node node_modules/.bin/webpack-dev-server --inline --hot"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,6 @@
   },
   "dependencies": {
     "jquery": "^3.1.1",
-    "rxjs": "^5.2.0"
+    "rxjs": "^5.5.0"
   }
 }
