@@ -1,8 +1,9 @@
-
 module RxJS.Notification where
 
 import Prelude
-import Control.Monad.Eff.Exception (Error(), message)
+
+import Effect.Exception (Error, message)
+
 
 data Notification a = OnError Error | OnNext a | OnComplete
 

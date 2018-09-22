@@ -89,25 +89,26 @@ module RxJS.Observable
   )
   where
 
-import Control.Monad.Eff.Uncurried
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Exception (Error)
 import Control.Monad.Error.Class (class MonadError, class MonadThrow)
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
-import DOM.Event.Types (Event, EventType(..), EventTarget)
 import Data.Foldable (foldr, class Foldable)
 import Data.Function.Uncurried (Fn2, Fn3, Fn4, runFn2, runFn3, runFn4)
+import Data.Map (Map, empty)
 import Data.Monoid (class Monoid)
-import Data.StrMap (StrMap, empty)
-import Prelude (class Semigroup, class Monad, class Bind, class Applicative, class Apply, class Functor, Unit, id, (<$>))
+import Effect (Effect)
+import Effect.Exception (Error)
+import Effect.Uncurried (EffectFn2, runEffectFn2)
+import Prelude (class Applicative, class Apply, class Bind, class Functor, class Monad, class Semigroup, Unit, identity)
 import RxJS.Notification (Notification(OnComplete, OnError, OnNext))
 import RxJS.Scheduler (Scheduler)
 import RxJS.Subscriber (Subscriber)
 import RxJS.Subscription (Subscription)
+import Web.Event.Event (EventType(..))
+import Web.Event.Internal.Types (Event, EventTarget)
 
 -- | *Note*: A couple operators are not wrapped (namely, `bindCallback`, `bindNodeCallback`) because RxJS
 -- | implementation details prevent giving the operators an "honest" PureScript type.
@@ -124,7 +125,7 @@ instance functorObservable :: Functor Observable where
   map = _map
 
 instance applyObservable :: Apply Observable where
-  apply = combineLatest id
+  apply = combineLatest identity
 
 instance applicativeObservable :: Applicative Observable where
   pure = just
@@ -166,13 +167,13 @@ foreign import subscribeOn :: forall a. Scheduler -> Observable a -> Observable 
 
 -- | Subscribing to an Observable is like calling a function, providing
 -- | `next`, `error` and `completed` effects to which the data will be delivered.
-foreign import subscribe :: forall a e. Subscriber a -> Observable a ->  Eff e Subscription
+foreign import subscribe :: forall a. Subscriber a -> Observable a ->  Effect Subscription
 
 -- Subscribe to an Observable, supplying only the `next` function.
 foreign import subscribeNext
-  :: forall a e. (a -> Eff e Unit)
+  :: forall a. (a -> Effect Unit)
   -> Observable a
-  -> Eff e Subscription
+  -> Effect Subscription
 
 
 -- Creation Operators
@@ -188,7 +189,7 @@ type Request =
   { url :: String
   , body :: String
   , timeout :: Int
-  , headers :: StrMap String
+  , headers :: Map String String
   , crossDomain :: Boolean
   , responseType :: String
   , method :: String
@@ -207,9 +208,9 @@ requestWithBody url body method =
   }
 
 
-foreign import ajax :: forall e. String -> Eff e (Observable Response)
+foreign import ajax :: String -> Effect (Observable Response)
 
-foreign import ajaxWithBody :: forall e. Request -> Eff e (Observable Response)
+foreign import ajaxWithBody :: Request -> Effect (Observable Response)
 
 -- | An empty Observable that emits only the complete notification.
 foreign import _empty :: forall a. Observable a
@@ -219,10 +220,10 @@ foreign import _empty :: forall a. Observable a
 foreign import fromArray :: forall a. Array a -> Observable a
 
 -- | Creates an Observable that emits events of the specified type coming from the given event target.
-fromEvent :: forall e. EventTarget -> EventType -> Eff e (Observable Event)
-fromEvent target (EventType str) = runEffFn2 fromEventImpl target str
+fromEvent :: EventTarget -> EventType -> Effect (Observable Event)
+fromEvent target (EventType str) = runEffectFn2 fromEventImpl target str
 
-foreign import fromEventImpl :: forall e. EffFn2 e EventTarget String (Observable Event)
+foreign import fromEventImpl :: EffectFn2 EventTarget String (Observable Event)
 
 -- | Returns an Observable that emits an infinite sequence of ascending
 -- | integers, with a constant interval of time of your choosing between those
@@ -401,7 +402,7 @@ foreign import windowToggleImpl
   :: forall a b c. Fn3 (Observable a) (Observable b) (b -> Observable c) (Observable (Array a))
 
 -- | It's like bufferWhen, but emits a nested Observable instead of an array.
-foreign import windowWhen :: forall a b. Observable a -> Observable b -> Observable (Observable a)
+foreign import windowWhen :: forall a b. (Unit -> Observable b) -> Observable a -> Observable (Observable a)
 
 -- Filtering Operators
 -- | It's like auditTime, but the silencing duration is determined by a second Observable.
@@ -593,7 +594,7 @@ materialize ob = runFn4 _materialize ob OnNext OnError OnComplete
 -- | Performs the effect on each value of the Observable.  An alias for `do`.
 -- | Useful for testing (transparently performing an effect outside of a subscription).
 
-foreign import performEach :: forall a e. Observable a -> (a -> Eff e Unit) -> Eff e (Observable a)
+foreign import performEach :: forall a. Observable a -> (a -> Effect Unit) -> Effect (Observable a)
 
 -- | Returns an Observable that emits a single item, a list composed of all the items emitted by the source Observable.
 -- | ![marble diagram](https://raw.githubusercontent.com/wiki/ReactiveX/RxJava/images/rx-operators/toList.png)
@@ -649,4 +650,4 @@ foreign import reduce :: forall a b. (a -> b -> b) -> b -> Observable a -> Obser
 -- Helper Functions
 
   -- | Run an Observable of effects
-foreign import unwrap :: forall a e. Observable (Eff e a) -> Eff e (Observable a)
+foreign import unwrap :: forall a. Observable (Effect a) -> Effect (Observable a)
